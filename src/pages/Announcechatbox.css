@@ -1,0 +1,246 @@
+/* FULL WIDTH HEADER (Pegasus style) */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;          /* 🔥 FULL BROWSER WIDTH */
+  height: 75px;
+  background: #33363fff;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 30px;
+  font-weight: 600;
+  z-index: 1000;         /* above sidebar */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.main-header .iq {
+  color: #2ba3d6; /* blue */
+  font-weight: 480;
+  font-size: 30px;
+    text-shadow:
+    0 0 5px #123152,
+    0 0 10px #0350a3,
+    0 0 20px #2b7cff,
+    0 0 40px #2b7cff;
+
+}
+
+.change-university {
+  color: #ffffff;
+  font-size: 17px;
+  cursor: pointer;
+  margin-left: 84%;
+}
+
+.change-university:hover {
+  text-decoration: underline;
+}
+
+
+/* BODY BELOW HEADER */
+.page-body {
+  display: flex;
+  height: calc(100vh - 75px);
+  width: 100vw;                 /* 🔥 FULL SCREEN */
+
+}
+
+.page-content {
+  width: calc(100vw - 260px);   /* 👈 sidebar width */
+  flex-shrink: 0;               /* 🔥 prevents shrinking */
+  display: flex;
+  height: 100%;
+  position: relative;
+
+}
+
+body {
+    overflow: hidden;
+}
+/* ===== CHAT WRAPPER ===== */
+.chat-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #dad9d9;
+  padding: 50px;
+  height: 82%; /* 🔥 NOW it works */
+  width: 82%;
+  max-width: none;
+  overflow: hidden;
+  position: absolute;
+  top: -31px;      /* move UP */
+  left: -288px;    /* move LEFT */
+
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 20px;
+}
+
+/* ===== CHAT ROWS ===== */
+.chat-row {
+  display: flex;
+  margin-bottom: 18px;
+}
+
+.chat-row.assistant {
+  justify-content: flex-start;
+}
+
+.chat-row.user {
+  justify-content: flex-end;
+}
+
+/* ===== CHAT BUBBLES ===== */
+.chat-bubble {
+  max-width: 65%;
+  border-radius: 18px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.chat-bubble.assistant {
+  background: #f4f4f4;
+  color: #333; 
+padding: 14px 10px;
+
+}
+
+.chat-bubble.user {
+  background: #1f7ae0;
+  color: #fff;
+  border-bottom-right-radius: 6px;
+    padding: 14px 10px;
+
+}
+
+
+/* ===== INPUT BAR ===== */
+.chat-input {
+  background: white;
+  padding: 12px 14px;
+  border-top: 3px solid #eee;
+  border-bottom: 3px solid #eee;
+  display: flex;
+  align-items: center;
+  border-radius: 50px;
+  flex-shrink: 0; /* 🔥 prevents movement */
+}
+
+.chat-input input {
+  flex: 1;
+  border: none;
+    color: #000000;        /* 👈 TEXT COLOR */
+  caret-color: #000000; /* 👈 CURSOR COLOR */
+  outline: none;
+  padding-left: 12px;
+  font-size: 18px;
+  background: transparent;
+}
+
+.common-questions h4 {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #464646;
+}
+
+.common-questions button {
+  display: block;
+  margin-bottom: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid #1f7ae0;
+  background: transparent;
+  color: #1f7ae0;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.common-questions button:hover {
+  background: #1f7ae0;
+  color: white;
+}
+
+.common-questions button:focus {
+  outline: none;
+  box-shadow: none;
+}
+.send-btn {
+  background: #1f7ae0;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: not-allowed;
+  padding-left: 17px;
+  margin-bottom: 2px;
+
+}
+.send-btn {
+  cursor: pointer;
+}
+
+.send-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.common-questions.popup {
+   background: #ffffff;
+  width: 520px;          /* 👈 popup size */
+  max-width: 90%;
+  padding: 35px 60px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  animation: popupScale 0.25s ease;
+  max-height: 40vh;      /* 🔒 limit height */
+  overflow-y: auto;  
+}
+
+
+.common-questions.popup {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff #b2b2b2;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.common-questions.popup button{
+   width:100%;
+   padding: 13px 20px;
+   padding: 10px 18px;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+
+/* Popup animation */
+@keyframes popupScale {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

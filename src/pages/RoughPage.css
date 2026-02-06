@@ -1,0 +1,54 @@
+/* FULL WIDTH HEADER (Pegasus style) */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;          /* 🔥 FULL BROWSER WIDTH */
+  height: 75px;
+  background: #33363fff;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 30px;
+  font-weight: 600;
+  z-index: 1000;         /* above sidebar */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.main-header .iq {
+  color: #2ba3d6; /* blue */
+  font-weight: 480;
+  font-size: 30px;
+    text-shadow:
+    0 0 5px #123152,
+    0 0 10px #0350a3,
+    0 0 20px #2b7cff,
+    0 0 40px #2b7cff;
+
+}
+
+.change-university {
+  color: #ffffff;
+  font-size: 17px;
+  cursor: pointer;
+  margin-left: 84%;
+}
+
+.change-university:hover {
+  text-decoration: underline;
+}
+
+
+/* BODY BELOW HEADER */
+.page-body {
+  display: flex;
+  margin-top: 95px;      /* push below header */
+}
+
+/* CONTENT AREA */
+.page-content {
+  margin-left: 390px;    /* sidebar width */
+  padding: 20px;
+  width: 100%;
+}

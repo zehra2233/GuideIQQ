@@ -1,0 +1,192 @@
+/* ================= FULL WIDTH HEADER ================= */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 75px;
+  background: #33363fff;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 30px;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.main-header .iq {
+  color: #2ba3d6;
+  font-weight: 480;
+  font-size: 30px;
+  text-shadow:
+    0 0 5px #123152,
+    0 0 10px #0350a3,
+    0 0 20px #2b7cff,
+    0 0 40px #2b7cff;
+}
+
+.change-university {
+  color: #ffffff;
+  font-size: 17px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.change-university:hover {
+  text-decoration: underline;
+}
+
+/* ================= PAGE BODY ================= */
+.page-body {
+  display: flex;
+  margin-top: 80px;
+  min-height: calc(100vh - 80px); /* 🔑 FIX */
+  align-items: flex-start;
+}
+
+/* ================= ANNOUNCEMENTS WRAPPER ================= */
+.announcements-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 100px; /* 🔑 EXACT sidebar width */
+ margin-top: -30px;        /* ⬆️ move wrapper UP */
+  height: calc(100vh - 90px);/* 🔑 shorter from bottom */
+  overflow: hidden;    
+}
+
+/* ================= MAIN CONTAINER ================= */
+.announcements-container {
+  width: 100%;
+  max-width: 1490px;
+  margin-top: -14px;
+  padding: 30px;
+  background: #ffffff;
+  margin-right: 70px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  box-sizing: border-box;
+  position: relative;        /* 🔑 REQUIRED for absolute cards */
+  padding-top: 200px;        /* space for first alert card */
+  padding-bottom: 120px;     /* space for lower cards */
+}
+
+/* ================= TITLE ================= */
+.announcements-title {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #676767;
+}
+
+/* ================= ALERT CARD ================= */
+.alert-card {
+  position: absolute;
+  top: 100px;
+  left: 20px;
+
+  width: calc(100% - 40px); /* 🔑 expands with container */
+  max-width: 1400px;
+  border: 1px solid #dbdbdb;
+
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 4px 4px 19px rgba(0,0,0,0.19);
+  box-sizing: border-box;
+}
+
+.alert-header {
+  background: #c62828;
+  color: white;
+  padding: 16px 20px;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
+
+.alert-body {
+  background: white;
+  padding: 20px;
+}
+
+.alert-text {
+  color: #0d0d0d;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+  font-size: 18px;
+}
+
+.alert-foot {
+  background: #e5e5e5;
+      color: #5e5e5e;
+
+  padding: 16px 20px;
+  font-size: 15px;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ================= SECOND ANNOUNCEMENT ================= */
+.announcement-card1 {
+  position: absolute;
+  top: 350px;
+  left: 20px;
+
+  width: calc(100% - 40px); /* 🔑 expands safely */
+  max-width: 1400px;
+
+  border-radius: 9px;
+  border: 1px solid #dbdbdb;
+  overflow: hidden;
+  box-shadow: 4px 4px 19px rgba(0,0,0,0.19);
+  box-sizing: border-box;
+  background-color: #adaeaf;
+}
+
+.header1 {
+  background: #ffffff;
+  color: rgb(0, 0, 0);
+  padding: 16px 20px;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.alert-body1 {
+  background: white;
+  padding: 20px;
+}
+
+.alert-text1 {
+  color: #0d0d0d;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+  font-size: 18px;
+}
+
+.alert-foot1 {
+  background: #e5e5e5;
+    color: #5e5e5e;
+  padding: 16px 20px;
+  font-size: 15px;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ================= SIMPLE CARD ================= */
+.announcement-card {
+  margin-top: 580px; /* pushes below absolute cards */
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
+}

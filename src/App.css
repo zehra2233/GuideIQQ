@@ -1,0 +1,268 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(231, 230, 230);
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+.homepage-logo {
+    position: absolute;
+    top: -2px;
+  left: -15px;
+  width: 220px;
+  height: 170px;
+  display:left;
+  margin: 0 auto 23px;
+  object-fit: contain;
+    opacity: 0.1; /* Slight transparency */
+
+}
+
+.homepage-title {
+  position: absolute;
+  top: 29px;
+  left: 129px; /* move text slightly right of logo */
+  font-size: 2.6rem;
+  font-weight:bold;
+  color:rgb(62, 71, 104); 
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg); 
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.campus-selector-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+    margin-top: -80px; /* move it upward */
+
+}
+
+.header h1 {
+  color:rgb(62, 71, 104); 
+  font-size: 3.2rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.header p {
+  color: #1e2934;
+  font-size: 1.3rem;
+}
+
+.selector-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 15px 12px rgba(0, 0, 0, 0.1);
+  width: 950px; 
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+    margin-top: 70px; /* moves the whole box down */
+
+}
+
+
+.selector-form .form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px; /* space between columns */
+  margin-top: 1.5%;
+}
+
+.selector-form .form-column {
+  flex: 1; /* makes them equal width */
+  flex-direction: column;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #333333;
+  margin-bottom: 2px;
+
+}
+
+.selector-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.selector-table th {
+  text-align: left;
+  padding: 0 15px 15px 15px;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.selector-table td {
+  padding: 0 15px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  color: #b5b5b5;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.12);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-top: 20px;
+
+}
+.form-select option {
+  color: #333;
+}
+
+.form-select option[value=""] {
+  color: #b5b5b5;   /* placeholder stays light */
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #8e8e8e;
+}
+
+.form-select:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.activate-button {
+  width: 35%;
+  height: 18%;
+  padding: 15px;
+  background-color: #3885eb;
+  color: white;
+  border-radius: 40px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+   margin: 0 auto;
+     margin-top:120px;
+}
+
+.activate-button.active {
+  background-color: #06568b;
+        outline: none;
+
+}
+
+.activate-button.active:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+    outline: none;
+
+}
+
+.activate-button:disabled {
+  cursor: not-allowed;
+  transform: none;
+      outline: none;
+
+}
+
+.success-message {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  color: #155724;
+  text-align: center;
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .campus-selector-container {
+    padding: 20px 15px;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .selector-form {
+    padding: 20px;
+  }
+  
+  .selector-table {
+    display: block;
+  }
+  
+  .selector-table thead {
+    display: none;
+  }
+  
+  .selector-table tbody, .selector-table tr, .selector-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .selector-table td {
+    margin-bottom: 15px;
+  }
+  
+  .selector-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #2c3e50;
+  }
+
+
+}

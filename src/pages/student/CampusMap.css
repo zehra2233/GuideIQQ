@@ -1,0 +1,359 @@
+/* FULL WIDTH HEADER (Pegasus style) */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 75px;
+  background: #33363fff;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 30px;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.main-header .iq {
+  color: #2ba3d6;
+  font-weight: 480;
+  font-size: 30px;
+  text-shadow: 
+    0 0 5px #123152,
+    0 0 10px #0350a3,
+    0 0 20px #2b7cff,
+    0 0 40px #2b7cff;
+}
+
+.change-university {
+  color: #ffffff;
+  font-size: 17px;
+  cursor: pointer;
+  margin-left: 84%;
+}
+
+.change-university:hover {
+  text-decoration: underline;
+}
+
+/* BODY BELOW HEADER */
+.page-body {
+  display: flex;
+  height: calc(100vh - 75px);
+  width: 100vw;
+}
+
+.page-content {
+  width: calc(100vw - 260px);
+  flex-shrink: 0;
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+body {
+  overflow: hidden;
+}
+
+.campusmap-bg {
+  background: #ffffff;
+  width: 116.5%;
+  margin-top: 50px;
+  margin-left: 101px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ===== Scoped ONLY to Campus Map Page ===== */
+.campus-page {
+  position: relative;
+  margin-right: -50vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -63.5vw;
+  width: 75vw;
+}
+
+/* Top Controls */
+.campus-page .top-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.campus-page .search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.campus-page .select {
+  padding: 2px 12px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  background: rgb(244, 244, 244);
+  color: #000;
+  outline: none;
+}
+
+.Campus-page-title {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #676767;
+}
+
+.campus-page .search-input {
+  width: 100%;
+  padding: 15px 15px 15px 48px;
+  border-radius: 50px;
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
+  background-image: url("/src/assets/search-icon.png");
+  background-repeat: no-repeat;
+  background-position: 18px center;
+  background-size: 18px;
+  color: #686868;
+  font-size: 16px;
+  outline: none;
+  margin-top: 85px;
+  box-sizing: border-box;
+}
+
+.campus-page .search-input::placeholder {
+  color: #aaaaaa;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.campus-page .controls-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Category Buttons */
+.campus-page .category-btn {
+  padding: 2px 12px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #f3f2f2;
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  outline: none;
+  font-size: 14px;
+}
+
+
+
+.campus-page .category-btn.active {
+  color: black;
+  background: #dadada;
+  outline: none;
+}
+
+/* Map */
+.campus-page .map-box {
+  width: 100%;
+  height: 350px;
+  background: #e5e5e5;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Directions Button */
+.campus-page .directions-btn {
+  position: absolute;
+  right: 1px;
+  top: 81.5%;
+  transform: translateY(-50%);
+  padding: 14px 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 15px;
+  outline: none;  
+}
+
+.campus-page .directions-btn:hover {
+  background: #1d4ed8;
+}
+
+/* FACILITIES GRID */
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* NORMAL CARD */
+.facility-card {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.facility-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.facility-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.view-map-btn {
+  background: #4c6ef5;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* STUDENT AFFAIRS SPECIAL CARD */
+.student-affairs-card {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px;
+  border-radius: 25px;
+  background: linear-gradient(to bottom, #f8fbff, #eef4ff);
+  border: 1px solid #dbeafe;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.08);
+}
+
+/* SERVICE TOP */
+.service-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.service-icon {
+  font-size: 30px;
+}
+
+.service-title-area h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.service-title-area p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #666;
+}
+
+/* SERVICE INFO ROW — equal gaps, shorter height, button inline at end */
+.service-info {
+  display: flex;
+  align-items: center;
+  background: #eef2f9;
+  border-radius: 14px;
+  padding: 12px 20px;
+  gap: 0;
+  flex-wrap: nowrap;
+}
+
+/* Each info item takes exactly equal space */
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #545b64;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.info-item strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3b4655;
+}
+
+.info-item span {
+  font-size: 15px;
+  color: #555;
+}
+
+.info-icon {
+  font-size: 18px;
+  color: #1751cd;
+  background: #d1e2fd;
+  padding: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Button inline at end of info row */
+.direction-btn {
+  flex-shrink: 0;
+  padding: 14px 30px;
+  border-radius: 50px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.direction-btn:focus {
+  outline: none;
+}
+.direction-btn:hover {
+  background: #1d4ed8;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .student-affairs-card {
+    grid-column: span 1;
+  }
+
+  .service-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .map-box {
+    height: 300px;
+  }
+}

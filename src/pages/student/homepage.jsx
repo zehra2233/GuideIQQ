@@ -1,7 +1,9 @@
 // src/pages/HomePage.jsx
 import React, { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
-import "../App.css";
+import logo from "../../assets/Logo.png";
+import "./homepage.css";
+import { useNavigate } from "react-router-dom";
+
 
 function HomePage() {
   const countries = [
@@ -39,6 +41,8 @@ function HomePage() {
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [universities, setUniversities] = useState([]);
   const [isAssistantActive, setIsAssistantActive] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const universitiesByCountryAndType = {
@@ -53,14 +57,6 @@ function HomePage() {
       "United Kingdom": {
         "Public University": ["University of Oxford", "University of Cambridge"],
         "Private University": ["Imperial College London", "London School of Economics"],
-      },
-      Australia: {
-        "Public University": ["University of Melbourne", "University of Sydney"],
-        "Private University": ["Australian National University", "University of Queensland"],
-      },
-      Germany: {
-        "Public University": ["Technical University of Munich", "Heidelberg University"],
-        "Private University": ["Free University of Berlin", "Humboldt University of Berlin"],
       },
     };
 
@@ -90,84 +86,86 @@ function HomePage() {
   };
 
   return (
-    <div className="campus-selector-container">
-      <img src={logo} alt="GuideIQ Logo" className="homepage-logo" />
-        <h1 className="homepage-title">GuideIQ</h1>
-      <div className="header">
-        <h1>Find Your Specific Campus Data</h1>
-        <p>Select your institution to activate the Data-Grounded Assistant</p>
-      </div>
+    <div className="homepage-page"> {/* ⭐ IMPORTANT WRAP`  PER */}
+      <div className="campus-selector-container">
 
-      
+<div className="homepage-brand">
+  <img src={logo} alt="GuideIQ Logo" className="homepage-logo" />
+  <h1 className="homepage-text-logo">
+    Guide<span className="iq">IQ</span>
+  </h1>
+</div>       
 
-      <form onSubmit={handleSubmit} className="selector-form">
-        <div className="form-row">
-          <div className="form-column">
-            <label>Country</label>  
-            <select
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="form-select"
-            >
-              <option value="">Select Country</option>
-              {countries.map((country, index) => (
-                <option key={`country-${index}`} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-column">
-            <label>Institution Type</label>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="form-select"
-            >
-              <option value="">Select Type</option>
-              {institutionTypes.map((type, index) => (
-                <option key={`type-${index}`} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-column">
-            <label>University Name</label>
-            <select
-              value={selectedUniversity}
-              onChange={(e) => setSelectedUniversity(e.target.value)}
-              className="form-select"
-              disabled={!selectedCountry}
-            >
-              <option value="">Select University</option>
-              {universities.map((university, index) => (
-                <option key={`university-${index}`} value={university}>
-                  {university}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="header">
+          <h1>Find Your Specific Campus Data</h1>
+          <p>Select your institution to activate the Data-Grounded Assistant</p>
         </div>
 
-        <button
-          type="submit"
-          className={`activate-button ${isAssistantActive ? "active" : ""}`}
-          disabled={!isAssistantActive}
-        >
-          Activate Specific Assistant
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} className="selector-form">
+          <div className="form-row">
 
-      {isAssistantActive && (
-        <div className="success-message">
-          <p>
+            <div className="form-column">
+              <label>Country</label>
+              <select
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+                className="form-select"
+              >
+                <option value="">Select Country</option>
+                {countries.map((country, i) => (
+                  <option key={i}>{country}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-column">
+              <label>Institution Type</label>
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="form-select"
+              >
+                <option value="">Select Type</option>
+                {institutionTypes.map((type, i) => (
+                  <option key={i}>{type}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-column">
+              <label>University Name</label>
+              <select
+                value={selectedUniversity}
+                onChange={(e) => setSelectedUniversity(e.target.value)}
+                className="form-select"
+                disabled={!selectedCountry}
+              >
+                <option value="">Select University</option>
+                {universities.map((uni, i) => (
+                  <option key={i}>{uni}</option>
+                ))}
+              </select>
+            </div>
+
+          </div>
+
+<button
+  type="button"
+  className={`activate-button ${isAssistantActive ? "active" : ""}`}
+  disabled={!isAssistantActive}
+  onClick={() => navigate("/chatbox2")}
+>
+  Activate Specific Assistant
+</button>
+        </form>
+
+        {isAssistantActive && (
+          <div className="success-message">
             ✅ Assistant ready for <strong>{selectedUniversity}</strong>
-          </p>
-        </div>
-      )}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

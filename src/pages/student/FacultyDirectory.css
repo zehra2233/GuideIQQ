@@ -93,14 +93,13 @@
   background-position: 18px center;
   background-size: 18px;
   color: #686868;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 
 .faculty-controls input::placeholder {
   color: #aaaaaa;
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
-  font-size: 16px;
+  font-family:  Arial, Helvetica, sans-serif;
 
 }
 
@@ -338,7 +337,7 @@ display: flex;
   height: 40px;              /* Forces both to be exactly the same height */
   transition: all 0.2s ease;
   font-family: Arial, Helvetica, sans-serif;
-  
+
 }
 
 /* Specific to the select to show the browser arrow */

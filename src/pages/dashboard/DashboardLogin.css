@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── FULL PAGE RESET scoped to dashboard only ── */
+.dl-wrapper {
+  all: unset;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* ── LEFT ── */
+.dl-left {
+  position: relative;
+  flex: 0 0 52%;
+  background: #F0F4FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.dl-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #c7d7f5 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.dl-box {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  animation: dlFadeUp .5s ease both;
+}
+
+@keyframes dlFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dl-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.2;
+}
+
+.dl-subtitle {
+  font-size: 13.5px;
+  color: #6B7280;
+  margin-bottom: 32px;
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+}
+
+.dl-group {
+  margin-bottom: 18px;
+}
+
+.dl-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 7px;
+  font-family: 'Inter', sans-serif;
+}
+
+.dl-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dl-field-icon {
+  position: absolute;
+  left: 13px;
+  width: 17px;
+  height: 17px;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.dl-input {
+  all: unset;
+  display: block;
+  width: 100%;
+  padding: 11px 42px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #111827;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.dl-input::placeholder { color: #9CA3AF; }
+
+.dl-input:focus,
+.dl-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #E5E7EB !important;
+}
+
+.dl-input::-moz-focus-inner {
+  border: 0;
+}
+
+.dl-input::-moz-focusring {
+  outline: none !important;
+}
+
+.dl-eye {
+  all: unset;
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  transition: color .2s;
+  outline: none;
+  border: none;
+}
+.dl-eye:hover { color: #1A56DB; }
+.dl-eye:focus,
+.dl-eye:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.dl-eye svg { width: 17px; height: 17px; }
+
+.dl-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dl-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+}
+
+.dl-remember input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #1A56DB;
+  cursor: pointer;
+}
+
+.dl-forgot {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1A56DB;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+}
+.dl-forgot:hover { text-decoration: underline; }
+
+.dl-btn {
+  all: unset;
+  display: block;
+  width: 100%;
+  padding: 13px;
+  background: #1A56DB;
+  color: white;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  text-align: center;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(26,86,219,.3);
+  transition: background .2s, transform .15s, box-shadow .2s;
+  outline: none;
+  border: none;
+}
+.dl-btn:hover {
+  background: #1648c0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(26,86,219,.38);
+}
+.dl-btn:focus,
+.dl-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 4px 16px rgba(26,86,219,.3);
+}
+.dl-btn::-moz-focus-inner {
+  border: 0;
+}
+.dl-btn:active { transform: translateY(0); }
+
+/* ── RIGHT ── */
+.dl-right {
+  flex: 1;
+  background: linear-gradient(160deg, #c8dbf5 0%, #b8ceec 50%, #a8c0e0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  gap: 48px;
+  height: 100vh;
+}
+
+.dl-orbit {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dl-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.45);
+}
+.dl-ring-1 { width: 120px; height: 120px; }
+.dl-ring-2 { width: 200px; height: 200px; }
+.dl-ring-3 { width: 290px; height: 290px; }
+
+.dl-center {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #3b82f6, #1A56DB);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(26,86,219,.4);
+  z-index: 2;
+}
+
+.dl-orbit-dot {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  top: 0;
+  left: 0;
+  animation: dlSpin 18s linear infinite;
+}
+
+.dl-orbit-chip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  animation: dlCounterSpin 18s linear infinite;
+}
+
+@keyframes dlSpin {
+  from { transform: rotate(var(--deg)); }
+  to   { transform: rotate(calc(var(--deg) + 360deg)); }
+}
+
+@keyframes dlCounterSpin {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to   { transform: translateX(-50%) rotate(-360deg); }
+}
+
+.dl-caption {
+  max-width: 320px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #2d4a70;
+  font-family: 'Inter', sans-serif;
+}
+
+.dl-caption strong { color: #1a3658; }
+
+@media (max-width: 768px) {
+  .dl-wrapper { flex-direction: column; overflow-y: auto; height: auto; position: relative; }
+  .dl-left, .dl-right { flex: unset; width: 100%; height: auto; }
+  .dl-right { padding: 40px 24px; }
+  .dl-orbit { width: 220px; height: 220px; }
+  .dl-ring-3 { width: 210px; height: 210px; }
+  .dl-ring-2 { width: 150px; height: 150px; }
+  .dl-ring-1 { width: 90px; height: 90px; }
+  .dl-orbit-dot { width: 210px; height: 210px; }
+}

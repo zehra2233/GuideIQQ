@@ -1,0 +1,210 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(231, 230, 230);
+  
+}
+
+/* ===== HOMEPAGE BACKGROUND ONLY ===== */
+.homepage-page {
+  min-height: 150vh;
+  width: 100vw;                 /* full real screen width */
+  margin-left: calc(50% - 50vw); /* centers full-width section safely */
+  margin-top: -40px;
+  background: linear-gradient(180deg, #b2c0e4 0%, #dfe3ea 40%, #eef1f6 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ===== CURVED DARK HEADER ===== */
+.campus-selector-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 119px;
+  background: linear-gradient(180deg, #293554 10%, #3a4666 150%);
+  border-bottom-left-radius: 80px;
+  border-bottom-right-radius: 80px;
+  z-index: 0;
+}
+
+.campus-selector-container::after {
+  content: "";
+  position: absolute;
+
+  /* stick to curve edge */
+  top: 115px;        /* fine-tuned to match ::before curve */
+   left: 50%;
+  transform: translateX(-50%);
+  width: 110%;          /* ← wider glow spread */
+  height: 13px;        /* 🔹 much thinner */
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 1) 10%,     /* 🔹 bright center */
+    rgba(69, 82, 121, 0.15) 60%,
+    rgba(255, 255, 255, 0) 90%
+  );
+
+  border-radius: 50%;
+  filter: blur(2.5px);   /* 🔹 sharper thin shine */
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* CONTAINER */
+.campus-selector-container {
+  position: relative;
+  padding-top: 140px;
+  text-align: center;
+  z-index: 1;
+}
+
+/* LOGO */
+/* ===== BRAND LOGO WRAPPER (homepage only) ===== */
+.homepage-brand {
+  position: absolute;
+  top: 25px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* image logo */
+.homepage-logo {
+  width: 60px;
+  opacity: 0.9;
+}
+
+/* text logo */
+.homepage-text-logo {
+  font-size: 40px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* glowing IQ (homepage scoped, NOT global header) */
+.homepage-text-logo .iq {
+  color: #497bd7;
+  font-weight: 480;
+  text-shadow:
+    0 0 5px #123152,
+    0 0 10px #0350a3,
+    0 0 20px #2b7cff,
+    0 0 40px #2b7cff;
+}
+/* HEADER */
+.header h1 {
+  font-size: 3rem;
+  color: #2f3b59;
+  font-weight: 600;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #4b5563;
+}
+
+/* FORM CARD */
+.selector-form {
+  background: #f7f8fb;
+  width: 950px;
+  height: 300px;
+  margin: 40px auto 0;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 25px 40px rgba(32, 35, 102, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ROW */
+.form-row {
+  display: flex;
+  gap: 30px;
+}
+
+/* LABEL */
+.form-column label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2f3b59;
+}
+
+/* SELECT */
+.form-select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1.1rem;
+ color: #dddddd;          /* dark readable text */
+  background-color: #ffffff;  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  transition: 0.25s;
+}
+
+
+.form-select:focus {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(56, 133, 235, 0.25);
+}
+
+
+/* dropdown list options */
+.form-select option {
+  color: #111827;          /* dark text for countries/types */
+  background: #ffffff;
+}
+/* BUTTON */
+.activate-button {
+  margin: 90px auto 0;
+  width: 320px;
+  padding: 16px;
+  border-radius: 40px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  background: #35497c;
+  box-shadow: 0 12px 25px rgba(47, 110, 229, 0.4);
+  transition: 0.25s;
+}
+
+.activate-button:focus,
+.activate-button:active {
+  outline: none;
+  box-shadow: 0 12px 25px rgba(47, 110, 229, 0.4);
+}
+.activate-button.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 35px rgba(47, 110, 229, 0.5);
+}
+
+/* SUCCESS */
+.success-message {
+  margin-top: 20px;
+  background: #e6f7ed;
+  color: #1e7e34;
+  padding: 14px;
+  border-radius: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+}

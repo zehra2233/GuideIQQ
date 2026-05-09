@@ -1,0 +1,52 @@
+/* MAIN MENU ITEM */
+.menu-item {
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  color: white;
+}
+
+/* HOVER EFFECT */
+.menu-item:hover {
+  background: linear-gradient(135deg, #3b4f73, #2a3b5f);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* ACTIVE - stays blue when selected */
+.menu-item.active {
+  background: linear-gradient(135deg, #3b4f73, #2a3b5f);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* SUBMENU */
+.submenu-item {
+  padding: 8px 40px;
+  cursor: pointer;
+  color: #e4e4e4;
+  transition: 0.2s;
+}
+
+.submenu-item:hover {
+  color: white;
+  transform: translateX(4px);
+}
+
+/* ACTIVE SUBMENU - stays highlighted when on that page */
+.submenu-item.submenu-active {
+  color: white;
+  transform: translateX(4px);
+  font-weight: bold;
+}
+
+/* DIVIDER LINE */
+.divider {
+  height: 1px;
+  width: 90%;
+  margin: 12px auto;
+  background: rgba(137, 121, 121, 0.25);
+}

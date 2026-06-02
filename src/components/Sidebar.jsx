@@ -33,13 +33,14 @@ const Sidebar = () => {
         <img
           src={uskudarLogo}
           alt="uskudar universitesi logo"
-          style={{ width: "90px", height: "90px", padding: 30 }}
+          style={{ width: "95px", height: "95px", padding: 15 }}
         />
         <h2
           style={{
             fontSize: "20px",
-            marginLeft: "-20px",
+            marginLeft: "-5px",
             marginBottom: "20px",
+            marginTop: "15px",
             color: "#fff",
             lineHeight: "1.2",
             textAlign: "left",
@@ -161,12 +162,13 @@ const Sidebar = () => {
           style={{
             marginTop: "255px",
             marginRight: 140,
-            padding: "12px 5px",
+            padding: "14px 0px",
             borderRadius: "3px",
             background: "#cc0707ff",
             cursor: "pointer",
             width: "53%",
             fontSize: 19,
+            color: "white",
           }}
         >
           Change University

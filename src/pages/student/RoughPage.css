@@ -41,13 +41,13 @@
 
 
 /* BODY BELOW HEADER */
-.page-body {
+.rough-page-body {
   display: flex;
   margin-top: 95px;      /* push below header */
 }
 
 /* CONTENT AREA */
-.page-content {
+.rough-page-content {
   margin-left: 390px;    /* sidebar width */
   padding: 20px;
   width: 100%;

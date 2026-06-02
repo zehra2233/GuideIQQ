@@ -1,31 +1,33 @@
 import { useState } from "react";
 import "./AddQuestion.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function AddQuestion() {
+const STORAGE_KEY = "guideiq_questions";
+
+export default function EditAi() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const item = state?.item ?? {};
 
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [question, setQuestion]           = useState(item.question ?? "");
+  const [answer, setAnswer]               = useState(item.answer   ?? "");
+  const [selectedCategory, setSelectedCategory] = useState(item.category ?? "");
 
-  const handlePublish = () => {
-    const STORAGE_KEY = "guideiq_questions";
+  const handleSave = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const all = stored ? JSON.parse(stored) : [];
-    const newId = all.length > 0 ? Math.max(...all.map(q => q.id)) + 1 : 1;
-    const newItem = { id: newId, question, answer, category: selectedCategory };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...all, newItem]));
+    const updated = all.map(q =>
+      q.id === item.id
+        ? { ...q, question, answer, category: selectedCategory }
+        : q
+    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     navigate("/dashboard/ai");
   };
 
-  const handleCancel = () => {
-    setQuestion("");
-    setAnswer("");
-    setSelectedCategory("");
-    navigate("/dashboard/ai");
-  };
+  const handleCancel = () => navigate("/dashboard/ai");
+
   return (
     <div className="ai-page">
 
@@ -48,14 +50,14 @@ export default function AddQuestion() {
 
           <header className="aq-header">
             <div className="aq-header-title">
-              <h1>Add New Question</h1>
+              <h1>Edit Question</h1>
             </div>
           </header>
 
           {/* QUESTION */}
           <div className="aq-form-group">
             <label className="aq-form-label">
-              <span className="aq-step">1.</span> Add Question
+              <span className="aq-step">1.</span> Question
             </label>
             <textarea
               className="aq-textarea"
@@ -70,7 +72,7 @@ export default function AddQuestion() {
           {/* ANSWER */}
           <div className="aq-form-group">
             <label className="aq-form-label">
-              <span className="aq-step">2.</span> Add Answer
+              <span className="aq-step">2.</span> Answer
             </label>
             <textarea
               className="aq-textarea"
@@ -128,11 +130,11 @@ export default function AddQuestion() {
             <button className="aq-btn aq-btn--cancel" onClick={handleCancel}>
               Cancel
             </button>
-            <button className="aq-btn aq-btn--publish" onClick={handlePublish}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: '10px', verticalAlign: 'middle', transform: 'rotate(-45deg)', marginBottom: '6px' }}>
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            <button className="aq-btn aq-btn--publish" onClick={handleSave}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", marginBottom: "3px" }}>
+                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
               </svg>
-              Publish
+              Save Changes
             </button>
           </div>
 

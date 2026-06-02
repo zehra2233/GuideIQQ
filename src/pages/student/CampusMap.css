@@ -39,18 +39,22 @@
 }
 
 /* BODY BELOW HEADER */
-.page-body {
+.campus-page-body {
   display: flex;
+  margin-top: 75px;
   height: calc(100vh - 75px);
   width: 100vw;
 }
 
-.page-content {
-  width: calc(100vw - 260px);
-  flex-shrink: 0;
-  display: flex;
-  height: 100%;
-  position: relative;
+.campus-page-content {
+  position: fixed;
+  top: 75px;
+  left: 390px;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #ffffff;
 }
 
 body {
@@ -59,21 +63,13 @@ body {
 
 .campusmap-bg {
   background: #ffffff;
-  width: 116.5%;
-  margin-top: 50px;
-  margin-left: 101px;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 /* ===== Scoped ONLY to Campus Map Page ===== */
 .campus-page {
-  position: relative;
-  margin-right: -50vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -63.5vw;
-  width: 75vw;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Top Controls */
@@ -309,11 +305,14 @@ body {
 
 .info-icon {
   font-size: 18px;
+  width: 18px;
+  height: 18px;
   color: #1751cd;
   background: #d1e2fd;
   padding: 9px;
   border-radius: 50%;
   flex-shrink: 0;
+  box-sizing: content-box;
 }
 
 /* Button inline at end of info row */

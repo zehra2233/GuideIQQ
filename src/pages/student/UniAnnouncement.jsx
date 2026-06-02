@@ -13,7 +13,7 @@ function UniAnnouncement() {
 
 </header>
   {/* 🔹 BODY */}
-<div className="page-body">
+<div className="uni-page-body">
   <Sidebar />
 
   {/* 🔹 ANNOUNCEMENTS CONTENT */}
@@ -62,15 +62,6 @@ International Day
 
 
 
-    {/* 🔔 ANNOUNCEMENT CARD */}
-    <div className="announcement-card">
-      <h3>Guest Lecture Series: AI in Medicine</h3>
-      <span className="tag event">Events</span>
-      <p className="date">Posted: February 14, 6:00 PM</p>
-      <p>
-        Join us for an exciting talk on AI applications in healthcare.
-      </p>
-    </div>
   </div>
   </div>
   </div>

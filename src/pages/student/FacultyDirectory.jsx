@@ -142,10 +142,10 @@ function FacultyDirectory() {
         <span className="change-university">Change University</span>
       </header>
 
-      <div className="page-body">
+      <div className="fac-page-body">
         <Sidebar />
 
-        <main className="page-content">
+        <main className="fac-page-content">
           <div className="page-content-inner">
             <h1 className="page-title">Faculty Directory</h1>
 

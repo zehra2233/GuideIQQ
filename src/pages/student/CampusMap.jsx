@@ -46,10 +46,10 @@ export default function CampusMap() {
         <span className="change-university">Change University</span>
       </header>
 
-      <div className="page-body campusmap-bg">
+      <div className="campus-page-body campusmap-bg">
         <Sidebar />
 
-        <main className="page-content">
+        <main className="campus-page-content">
           <div className="campus-page">
 
             {/* TOP CONTROLS */}

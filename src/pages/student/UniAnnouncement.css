@@ -39,60 +39,47 @@
 }
 
 /* ================= PAGE BODY ================= */
-.page-body {
+.uni-page-body {
   display: flex;
-  margin-top: 80px;
-  min-height: calc(100vh - 80px); /* 🔑 FIX */
-  align-items: flex-start;
+  margin-top: 75px;
+  height: calc(100vh - 75px);
+  width: 100vw;
 }
 
 /* ================= ANNOUNCEMENTS WRAPPER ================= */
 .announcements-wrapper {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  margin-left: 100px; /* 🔑 EXACT sidebar width */
- margin-top: -30px;        /* ⬆️ move wrapper UP */
-  height: calc(100vh - 90px);/* 🔑 shorter from bottom */
-  overflow: hidden;    
+  position: fixed;
+  top: 75px;
+  left: 390px;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: #ffffff;
 }
 
 /* ================= MAIN CONTAINER ================= */
 .announcements-container {
   width: 100%;
-  max-width: 1490px;
-  margin-top: -14px;
   padding: 30px;
-  background: #ffffff;
-  margin-right: 70px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
   box-sizing: border-box;
-  position: relative;        /* 🔑 REQUIRED for absolute cards */
-  padding-top: 200px;        /* space for first alert card */
-  padding-bottom: 120px;     /* space for lower cards */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 /* ================= TITLE ================= */
 .announcements-title {
-  position: absolute;
-  top: 20px;
-  left: 30px;
   font-size: 22px;
   font-weight: 600;
   color: #676767;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 /* ================= ALERT CARD ================= */
 .alert-card {
-  position: absolute;
-  top: 100px;
-  left: 20px;
-
-  width: calc(100% - 40px); /* 🔑 expands with container */
-  max-width: 1400px;
+  width: 100%;
   border: 1px solid #dbdbdb;
-
   border-radius: 9px;
   overflow: hidden;
   box-shadow: 4px 4px 19px rgba(0,0,0,0.19);
@@ -134,13 +121,7 @@
 
 /* ================= SECOND ANNOUNCEMENT ================= */
 .announcement-card1 {
-  position: absolute;
-  top: 350px;
-  left: 20px;
-
-  width: calc(100% - 40px); /* 🔑 expands safely */
-  max-width: 1400px;
-
+  width: 100%;
   border-radius: 9px;
   border: 1px solid #dbdbdb;
   overflow: hidden;
@@ -184,9 +165,9 @@
 
 /* ================= SIMPLE CARD ================= */
 .announcement-card {
-  margin-top: 580px; /* pushes below absolute cards */
   background: #ffffff;
   border-radius: 6px;
   padding: 20px;
+  border: 1px solid #dbdbdb;
   box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
 }

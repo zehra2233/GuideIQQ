@@ -1,0 +1,136 @@
+@import "./ai.css";
+
+/* PAGE */
+.dai-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* BLURRED BACKGROUND */
+.dai-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: hidden;
+  filter: blur(2px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dai-shell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+}
+
+/* OVERLAY */
+.dai-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+/* POPUP */
+.dai-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e6ecf5;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
+  padding: 44px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 400px;
+  text-align: center;
+  z-index: 10;
+}
+
+.dai-popup-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  margin-bottom: 4px;
+}
+
+.dai-popup-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dai-popup-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.65;
+}
+
+/* ACTIONS */
+.dai-popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.dai-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.dai-btn--cancel {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.dai-btn--cancel:hover {
+  background: #f9fafb;
+}
+
+.dai-btn--cancel:focus,
+.dai-btn--cancel:focus-visible,
+.dai-btn--cancel:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.dai-btn--delete {
+  background: #2563eb;
+  color: white;
+}
+
+.dai-btn--delete:hover {
+  background: #1d4ed8;
+}
+
+.dai-btn--delete:focus,
+.dai-btn--delete:focus-visible,
+.dai-btn--delete:active {
+  outline: none;
+  box-shadow: none;
+}

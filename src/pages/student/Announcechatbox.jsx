@@ -41,10 +41,10 @@ function Announcechatbox() {
       </header>
 
       {/* BODY */}
-      <div className="page-body">
+      <div className="ann-page-body">
         <Sidebar />
 
-        <div className="page-content">
+        <div className="ann-page-content">
           <div className="chat-wrapper">
             <div className="chat-messages">
               {messages.map((msg, index) => (

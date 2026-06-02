@@ -1,126 +1,241 @@
 import { useState } from "react";
 import "./DashboardLogin.css";
+import { useNavigate } from "react-router-dom";
+
+const CAPTCHA_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+function genCaptcha() {
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += CAPTCHA_CHARS[Math.floor(Math.random() * CAPTCHA_CHARS.length)];
+  }
+  return code;
+}
 
 export default function DashboardLogin() {
+  const navigate = useNavigate();
+  const [mode, setMode] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [remember, setRemember] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [login, setLogin] = useState({ email: "", password: "" });
+  const [signup, setSignup] = useState({ name: "", email: "", password: "", confirm: "", captcha: "" });
+  const [captchaCode, setCaptchaCode] = useState(genCaptcha);
+  const [captchaError, setCaptchaError] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  function refreshCaptcha() {
+    setCaptchaCode(genCaptcha());
+    setSignup(s => ({ ...s, captcha: "" }));
+    setCaptchaError(false);
+  }
 
-  const handleLogin = () => {
-    console.log("Logging in with:", formData);
-  };
+  function handleSignup() {
+    if (signup.captcha.trim() !== captchaCode) {
+      setCaptchaError(true);
+      setCaptchaCode(genCaptcha());
+      setSignup(s => ({ ...s, captcha: "" }));
+      return;
+    }
+    setCaptchaError(false);
+    localStorage.setItem("adminName", signup.name.trim() || "Admin");
+    setMode("login");
+  }
 
   return (
-    <div className="dl-wrapper">
+    <div className="dl-page">
 
-      {/* ── LEFT PANEL ── */}
-      <div className="dl-left">
-        <div className="dl-grid-pattern" />
+      {/* Animated background blobs */}
+      <div className="dl-blob dl-blob-1" />
+      <div className="dl-blob dl-blob-2" />
+      <div className="dl-blob dl-blob-3" />
+      <div className="dl-blob dl-blob-4" />
 
-        <div className="dl-box">
-          <h1 className="dl-title">Dashboard Panel</h1>
-          <p className="dl-subtitle">Enter your registered email address and password to login!</p>
+      {/* Floating particles */}
+      {[...Array(12)].map((_, i) => (
+        <div key={i} className="dl-particle" style={{ "--i": i }} />
+      ))}
 
-          {/* Email */}
-          <div className="dl-group">
-            <label className="dl-label">Email</label>
-            <div className="dl-input-wrap">
-              <svg className="dl-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              <input
-                className="dl-input"
-                type="text"
-                name="email"
-                placeholder="eg. admin@guideiq.com"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+      {/* Card */}
+      <div className="dl-card">
+
+        {/* Logo + brand */}
+        <div className="dl-logo-row">
+          <svg className="dl-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M38 6 Q42 6 42 10 L42 28 Q42 32 38 32 L20 32 L13 42 L15 32 L10 32 Q6 32 6 28 L6 10 Q6 6 10 6 Z" fill="#202c49"/>
+            <circle cx="16" cy="19" r="2.8" fill="white"/>
+            <circle cx="24" cy="19" r="2.8" fill="#2ba3d6"/>
+            <circle cx="32" cy="19" r="2.8" fill="white"/>
+          </svg>
+          <div>
+            <span className="dl-logo-text">Guide<span>IQ</span></span>
           </div>
+        </div>
 
-          {/* Password */}
-          <div className="dl-group">
-            <label className="dl-label">Password</label>
-            <div className="dl-input-wrap">
-              <svg className="dl-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-              </svg>
-              <input
-                className="dl-input"
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="••••••••••••"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <button className="dl-eye" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <h2 className="dl-welcome">
+          {mode === "login" ? "ADMIN PANEL" : "Create an account"}
+        </h2>
+
+        {mode === "login" ? (
+          <div className="dl-form" key="login">
+
+            <div className="dl-field">
+              <label className="dl-field-label">User ID or email address</label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type="email"
+                  placeholder="Email or phone number"
+                  value={login.email}
+                  onChange={e => setLogin({ ...login, email: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="dl-field">
+              <label className="dl-field-label">Password</label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={login.password}
+                  onChange={e => setLogin({ ...login, password: e.target.value })}
+                />
+                <button className="dl-eye" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="dl-options-row">
+              <label className="dl-toggle-wrap">
+                <input type="checkbox" className="dl-toggle-input" />
+                <span className="dl-toggle-track"><span className="dl-toggle-thumb"/></span>
+                <span className="dl-toggle-label">Remember me</span>
+              </label>
+              <a href="#" className="dl-forgot">Forgot password?</a>
+            </div>
+
+            <button className="dl-signin-btn" onClick={() => navigate("/dashboard/ai")}>
+              Log in
+            </button>
+
+            <p className="dl-switch-center">
+              Don't have an account?{" "}
+              <span className="dl-switch-link" onClick={() => setMode("signup")}>Sign up</span>
+            </p>
+
+          </div>
+        ) : (
+          <div className="dl-form" key="signup">
+
+            <div className="dl-field">
+              <label className="dl-field-label">Full Name <span className="dl-star">*</span></label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type="text"
+                  placeholder="John Doe"
+                  value={signup.name}
+                  onChange={e => setSignup({ ...signup, name: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="dl-field">
+              <label className="dl-field-label">Email address <span className="dl-star">*</span></label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type="email"
+                  placeholder="admin@guideiq.com"
+                  value={signup.email}
+                  onChange={e => setSignup({ ...signup, email: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="dl-field">
+              <label className="dl-field-label">Password <span className="dl-star">*</span></label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  value={signup.password}
+                  onChange={e => setSignup({ ...signup, password: e.target.value })}
+                />
+                <button className="dl-eye" onClick={() => setShowPassword(!showPassword)}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Options */}
-          <div className="dl-options">
-            <label className="dl-remember">
-              <input type="checkbox" checked={remember} onChange={() => setRemember(!remember)} />
-              <span>Remember me</span>
-            </label>
-            <a href="#" className="dl-forgot">Forgot Password ?</a>
-          </div>
-
-          {/* Button */}
-          <button className="dl-btn" onClick={handleLogin}>Login</button>
-        </div>
-      </div>
-
-      {/* ── RIGHT PANEL ── */}
-      <div className="dl-right">
-        <div className="dl-orbit">
-          <div className="dl-ring dl-ring-1"/>
-          <div className="dl-ring dl-ring-2"/>
-          <div className="dl-ring dl-ring-3"/>
-
-          <div className="dl-center">
-            <svg viewBox="0 0 24 24" fill="white" width="36" height="36">
-              <path d="M10 17v-6l-2 2V11l3-3 3 3v2l-2-2v6h-2zm2-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            </svg>
-          </div>
-
-          {[0,60,120,180,240,300].map((deg, i) => (
-            <div key={i} className="dl-orbit-dot" style={{"--deg": `${deg}deg`}}>
-              <div className="dl-orbit-chip">
-                {i === 0 && <svg viewBox="0 0 24 24" width="20" height="20" fill="#0078D7"><path d="M4 4h16v16H4z"/><path fill="white" d="M8 8h3v8H8zm5 0h3v8h-3z"/></svg>}
-                {i === 1 && <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="#EA4335"/><path fill="white" d="M8 8h8v8H8z"/></svg>}
-                {i === 2 && <svg viewBox="0 0 24 24" width="20" height="20" fill="#25D366"><circle cx="12" cy="12" r="10"/><path fill="white" d="M8 12l2.5 2.5L16 9"/></svg>}
-                {i === 3 && <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="#4285F4"/><path fill="white" d="M8 11h8v2H8z"/></svg>}
-                {i === 4 && <svg viewBox="0 0 24 24" width="20" height="20" fill="#0A66C2"><rect x="2" y="2" width="20" height="20" rx="4"/><path fill="white" d="M7 10h2v7H7zm1-3a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm3 3h2v1c.4-.7 1.2-1 2-1 1.7 0 3 1.3 3 3v4h-2v-3.5c0-.8-.7-1.5-1.5-1.5S14 13.7 14 14.5V17h-3v-7z"/></svg>}
-                {i === 5 && <svg viewBox="0 0 23 23" width="20" height="20"><rect x="1" y="1" width="10" height="10" fill="#F25022"/><rect x="12" y="1" width="10" height="10" fill="#7FBA00"/><rect x="1" y="12" width="10" height="10" fill="#00A4EF"/><rect x="12" y="12" width="10" height="10" fill="#FFB900"/></svg>}
+                </button>
               </div>
             </div>
-          ))}
-        </div>
 
-        <p className="dl-caption">
-          Compatible with <strong>Gmail, Outlook Web, LinkedIn and most web editors</strong> for a smooth experience anywhere online.
-        </p>
+            <div className="dl-field">
+              <label className="dl-field-label">Confirm Password <span className="dl-star">*</span></label>
+              <div className="dl-box-wrap">
+                <input
+                  className="dl-box-input"
+                  type={showConfirm ? "text" : "password"}
+                  placeholder="Re-enter password"
+                  value={signup.confirm}
+                  onChange={e => setSignup({ ...signup, confirm: e.target.value })}
+                />
+                <button className="dl-eye" onClick={() => setShowConfirm(!showConfirm)}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="dl-field">
+              <label className="dl-field-label">Enter Captcha <span className="dl-star">*</span></label>
+              <div className="dl-captcha-row">
+                <input
+                  className={`dl-box-input dl-captcha-input ${captchaError ? "dl-box-input--error" : ""}`}
+                  type="text"
+                  placeholder="Enter captcha"
+                  value={signup.captcha}
+                  onChange={e => { setSignup({ ...signup, captcha: e.target.value }); setCaptchaError(false); }}
+                />
+                <button className="dl-captcha-refresh" onClick={refreshCaptcha} type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                    <path d="M23 4v6h-6"/>
+                    <path d="M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                  </svg>
+                </button>
+                <div className="dl-captcha-code">{captchaCode}</div>
+              </div>
+              {captchaError && <p className="dl-captcha-error">Incorrect captcha. Please try again.</p>}
+            </div>
+
+            <button className="dl-signin-btn" onClick={handleSignup}>
+              Create Account
+            </button>
+
+            <p className="dl-switch-center">
+              Already have an account?{" "}
+              <span className="dl-switch-link" onClick={() => setMode("login")}>Sign in</span>
+            </p>
+
+          </div>
+        )}
+
       </div>
     </div>
   );

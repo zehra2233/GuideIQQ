@@ -41,10 +41,10 @@ function Academicchatbox() {
       </header>
 
       {/* BODY */}
-      <div className="page-body">
+      <div className="acad-page-body">
         <Sidebar />
 
-        <div className="page-content">
+        <div className="acad-page-content">
           <div className="chat-wrapper">
             <div className="chat-messages">
               {messages.map((msg, index) => (

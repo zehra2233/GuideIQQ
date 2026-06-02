@@ -16,10 +16,10 @@ function RoughPage() {
 
 
       {/* 🔹 BODY */}
-      <div className="page-body">
+      <div className="rough-page-body">
         <Sidebar />
 
-        <main className="page-content">
+        <main className="rough-page-content">
         </main>
       </div>
     </>

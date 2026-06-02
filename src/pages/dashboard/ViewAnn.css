@@ -1,0 +1,179 @@
+
+.va-shell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f9f9f9;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* TOPBAR */
+.va-topbar {
+  height: 60px;
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 35px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.va-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.va-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.va-user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  color: white;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.va-user-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  letter-spacing: 0.01em;
+}
+
+/* SCROLL AREA */
+.va-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 45px 48px 45px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* PAGE HEADER */
+.va-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.va-page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #676767;
+}
+
+.va-back-btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.va-back-btn:hover { background: #f3f4f6; }
+.va-back-btn:focus,
+.va-back-btn:focus-visible,
+.va-back-btn:active { outline: none; box-shadow: none; }
+
+/* CARD */
+.va-card {
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 24px;
+}
+
+/* COLORED HEADER BAR */
+.va-card-header {
+  background: #b91c1c;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.va-card-header-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.va-card-header-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* CARD BODY */
+.va-card-body {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.va-card-content {
+  margin: 0;
+  font-size: 17px;
+  color: #1f2937;
+  line-height: 1.8;
+  text-align: left;
+}
+
+/* CARD FOOTER */
+.va-card-footer {
+  background: #f3f4f6;
+  padding: 12px 24px;
+  text-align: right;
+  font-size: 15px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* META ROW */
+.va-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.va-meta-label {
+  font-size: 17px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.va-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #eef2ff;
+  color: #2563eb;
+}

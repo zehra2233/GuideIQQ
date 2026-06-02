@@ -1,0 +1,151 @@
+@import "./Announce.css";
+
+/* PAGE */
+.dap-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* BLURRED BACKGROUND */
+.dap-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: hidden;
+  filter: blur(2px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dap-shell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+}
+
+/* topbar inside blurred bg */
+.ann-topbar {
+  height: 60px;
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 35px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* OVERLAY */
+.dap-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+/* POPUP */
+.dap-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e6ecf5;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.18);
+  padding: 44px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 400px;
+  text-align: center;
+  z-index: 10;
+}
+
+.dap-popup-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  margin-bottom: 4px;
+}
+
+.dap-popup-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dap-popup-desc {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.65;
+}
+
+/* ACTIONS */
+.dap-popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.dap-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.dap-btn--cancel {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.dap-btn--cancel:hover {
+  background: #f9fafb;
+}
+
+.dap-btn--cancel:focus,
+.dap-btn--cancel:focus-visible,
+.dap-btn--cancel:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.dap-btn--delete {
+  background: #2563eb;
+  color: white;
+}
+
+.dap-btn--delete:hover {
+  background: #1d4ed8;
+}
+
+.dap-btn--delete:focus,
+.dap-btn--delete:focus-visible,
+.dap-btn--delete:active {
+  outline: none;
+  box-shadow: none;
+}

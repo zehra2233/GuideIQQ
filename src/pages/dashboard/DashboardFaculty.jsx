@@ -1,46 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./DashboardFaculty.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useNavigate } from "react-router-dom";
-
-export const FACULTY_KEY = "guideiq_faculty";
-
-const defaultFaculty = [
-  { id: 1,  name: "Prof. Dr. Ahmet Yılmaz",      department: "Computer Engineering",    email: "ahmet.yilmaz@uskudar.edu.tr",   phone: "+90 216 400 2222", office: "B Block, Room 301", hours: "Mon-Wed 10:00–12:00" },
-  { id: 2,  name: "Doç. Dr. Fatma Kaya",         department: "Psychology",              email: "fatma.kaya@uskudar.edu.tr",     phone: "+90 216 400 2223", office: "A Block, Room 112", hours: "Tue-Thu 13:00–15:00" },
-  { id: 3,  name: "Dr. Öğr. Üyesi Murat Demir",  department: "Business Administration", email: "murat.demir@uskudar.edu.tr",    phone: "+90 216 400 2224", office: "C Block, Room 205", hours: "Mon-Fri 09:00–11:00" },
-  { id: 4,  name: "Prof. Dr. Ayşe Şahin",        department: "Nursing",                 email: "ayse.sahin@uskudar.edu.tr",     phone: "+90 216 400 2225", office: "D Block, Room 410", hours: "Wed-Fri 14:00–16:00" },
-  { id: 5,  name: "Doç. Dr. Hasan Çelik",        department: "Physiotherapy",           email: "hasan.celik@uskudar.edu.tr",    phone: "+90 216 400 2226", office: "E Block, Room 102", hours: "Mon-Thu 11:00–13:00" },
-  { id: 6,  name: "Dr. Öğr. Üyesi Zeynep Arslan", department: "Medicine",              email: "zeynep.arslan@uskudar.edu.tr",  phone: "+90 216 400 2227", office: "F Block, Room 308", hours: "Tue-Wed 10:00–12:00" },
-  { id: 7,  name: "Prof. Dr. Emre Doğan",        department: "Architecture",            email: "emre.dogan@uskudar.edu.tr",     phone: "+90 216 400 2228", office: "A Block, Room 215", hours: "Mon-Fri 13:00–15:00" },
-  { id: 8,  name: "Doç. Dr. Selin Koç",          department: "Law",                     email: "selin.koc@uskudar.edu.tr",      phone: "+90 216 400 2229", office: "B Block, Room 120", hours: "Thu-Fri 09:00–11:00" },
-  { id: 9,  name: "Dr. Öğr. Üyesi Ali Polat",    department: "Dentistry",               email: "ali.polat@uskudar.edu.tr",      phone: "+90 216 400 2230", office: "C Block, Room 312", hours: "Tue-Thu 14:00–16:00" },
-  { id: 10, name: "Prof. Dr. Neslihan Güneş",     department: "Pharmacy",               email: "neslihan.gunes@uskudar.edu.tr", phone: "+90 216 400 2231", office: "D Block, Room 201", hours: "Mon-Wed 11:00–13:00" },
-  { id: 11, name: "Doç. Dr. Tarık Özkan",        department: "Communication",           email: "tarik.ozkan@uskudar.edu.tr",    phone: "+90 216 400 2232", office: "E Block, Room 405", hours: "Wed-Fri 10:00–12:00" },
-  { id: 12, name: "Dr. Öğr. Üyesi Gül Aydın",    department: "Fine Arts",              email: "gul.aydin@uskudar.edu.tr",      phone: "+90 216 400 2233", office: "F Block, Room 110", hours: "Mon-Thu 15:00–17:00" },
-];
-
-function loadFaculty() {
-  try {
-    const stored = localStorage.getItem(FACULTY_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-  } catch { /* ignore */ }
-  localStorage.setItem(FACULTY_KEY, JSON.stringify(defaultFaculty));
-  return defaultFaculty;
-}
+import { db, auth } from "../../firebase";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function DashboardFaculty() {
   const navigate = useNavigate();
-  const [faculty, setFaculty] = useState(loadFaculty);
+  const [faculty, setFaculty] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🔥 Load faculty from Firestore
+  useEffect(() => {
+    fetchFaculty();
+  }, []);
+
+  async function fetchFaculty() {
+    setLoading(true);
+    try {
+      const snapshot = await getDocs(collection(db, "faculty"));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFaculty(data);
+    } catch (err) {
+      console.error("Error fetching faculty:", err);
+    }
+    setLoading(false);
+  }
+
+  // 🔥 Delete from Firestore
+  async function handleDelete() {
+    try {
+      await deleteDoc(doc(db, "faculty", deleteId));
+      setFaculty(prev => prev.filter(f => f.id !== deleteId));
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
+    setShowDelete(false);
+  }
 
   const filtered = faculty.filter((f) =>
     f.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -48,22 +50,15 @@ export default function DashboardFaculty() {
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
-
   const paginated = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-  function handleDelete() {
-    const updated = faculty.filter((f) => f.id !== deleteId);
-    localStorage.setItem(FACULTY_KEY, JSON.stringify(updated));
-    setFaculty(updated);
-    setShowDelete(false);
-  }
+  const adminName = auth.currentUser?.displayName || "Admin";
 
   return (
     <div className="fac-dash-page">
-
       <DashboardSidebar activePage="faculty" />
 
       <div className="fac-dash-shell">
@@ -72,12 +67,8 @@ export default function DashboardFaculty() {
         <div className="fac-dash-topbar">
           <div className="fac-dash-topbar-right">
             <div className="fac-dash-user-profile">
-              <div className="fac-dash-user-avatar">
-                {(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}
-              </div>
-              <span className="fac-dash-user-name">
-                {localStorage.getItem("adminName") || "Admin"}
-              </span>
+              <div className="fac-dash-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="fac-dash-user-name">{adminName}</span>
             </div>
           </div>
         </div>
@@ -104,49 +95,57 @@ export default function DashboardFaculty() {
 
         {/* TABLE CARD */}
         <div className="fac-dash-table-card">
-          <table className="fac-dash-table">
-            <thead>
-              <tr>
-                <th style={{ width: "50px" }}></th>
-                <th style={{ width: "60px" }}>Photo</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Office Location</th>
-                <th>Office Hours</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((item) => (
-                <tr key={item.id}>
-                  <td><input type="checkbox" className="fac-dash-checkbox" /></td>
-                  <td>
-                    <div className="fac-dash-avatar">
-                      {item.photo
-                        ? <img src={item.photo} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
-                        : item.name.split(" ").slice(-1)[0][0]
-                      }
-                    </div>
-                  </td>
-                  <td className="fac-dash-name-cell">{item.name}</td>
-                  <td><span className="fac-dash-dept-badge">{item.department}</span></td>
-                  <td className="fac-dash-email-cell">{item.email}</td>
-                  <td>{item.phone}</td>
-                  <td>{item.office}</td>
-                  <td><span className="fac-dash-hours-badge">{item.hours}</span></td>
-                  <td>
-                    <div className="fac-dash-actions-cell">
-                      <button className="fac-dash-icon-btn" onClick={() => navigate("/dashboard/view-faculty", { state: { item } })}>👁</button>
-                      <button className="fac-dash-icon-btn" onClick={() => navigate("/dashboard/edit-faculty", { state: { item } })}>✎</button>
-                      <button className="fac-dash-icon-btn" onClick={() => { setDeleteId(item.id); setShowDelete(true); }}>🗑</button>
-                    </div>
-                  </td>
+          {loading ? (
+            <p style={{ textAlign: "center", padding: "20px" }}>Loading...</p>
+          ) : (
+            <table className="fac-dash-table">
+              <thead>
+                <tr>
+                  <th style={{ width: "50px" }}></th>
+                  <th style={{ width: "60px" }}>Photo</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Office Location</th>
+                  <th>Office Hours</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginated.length === 0 ? (
+                  <tr><td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>No faculty members found</td></tr>
+                ) : (
+                  paginated.map((item) => (
+                    <tr key={item.id}>
+                      <td><input type="checkbox" className="fac-dash-checkbox" /></td>
+                      <td>
+                        <div className="fac-dash-avatar">
+                          {item.photo
+                            ? <img src={item.photo} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                            : item.name.split(" ").slice(-1)[0][0]
+                          }
+                        </div>
+                      </td>
+                      <td className="fac-dash-name-cell">{item.name}</td>
+                      <td><span className="fac-dash-dept-badge">{item.department}</span></td>
+                      <td className="fac-dash-email-cell">{item.email}</td>
+                      <td>{item.phone}</td>
+                      <td>{item.office}</td>
+                      <td><span className="fac-dash-hours-badge">{item.hours}</span></td>
+                      <td>
+                        <div className="fac-dash-actions-cell">
+                          <button className="fac-dash-icon-btn" onClick={() => navigate("/dashboard/view-faculty", { state: { item } })}>👁</button>
+                          <button className="fac-dash-icon-btn" onClick={() => navigate("/dashboard/edit-faculty", { state: { item } })}>✎</button>
+                          <button className="fac-dash-icon-btn" onClick={() => { setDeleteId(item.id); setShowDelete(true); }}>🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {/* PAGINATION */}
@@ -184,7 +183,6 @@ export default function DashboardFaculty() {
           </div>
         </>
       )}
-
     </div>
   );
 }

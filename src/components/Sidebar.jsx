@@ -21,38 +21,43 @@ const Sidebar = () => {
         top: "76px",
         left: "0",
         width: "390px",
-        padding: "10px",
-        background: "#33363fff",
-        borderRight: "1px solid #e5e5e5",
-        height: "100vh",
-        overflowY: "auto",
+        padding: "0",
+        background: "#33363f",
+        borderRight: "1px solid rgba(255,255,255,0.06)",
+        height: "calc(100vh - 76px)",
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: "4px 0 20px rgba(0,0,0,0.22)",
       }}
     >
       {/* Logo + University Name */}
-      <div style={{ display: "flex", alignItems: "center", gap: "1px" }}>
+      <div style={{
+        display: "flex", alignItems: "center", gap: "12px",
+        padding: "20px 22px 18px",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        flexShrink: 0,
+      }}>
         <img
           src={uskudarLogo}
           alt="uskudar universitesi logo"
-          style={{ width: "95px", height: "95px", padding: 15 }}
+          style={{ width: "60px", height: "60px", flexShrink: 0, borderRadius: "8px" }}
         />
-        <h2
-          style={{
-            fontSize: "20px",
-            marginLeft: "-5px",
-            marginBottom: "20px",
-            marginTop: "15px",
-            color: "#fff",
-            lineHeight: "1.2",
-            textAlign: "left",
-          }}
-        >
-          T.C. <br />
-          ÜSKÜDAR <br />
-          ÜNİVERSİTESİ
-        </h2>
+        <div>
+          <h2 style={{
+            fontSize: "14px",
+            fontWeight: 700,
+            color: "#ffffff",
+            lineHeight: "1.4",
+            fontFamily: "Arial, Helvetica, sans-serif",
+            margin: 0,
+            letterSpacing: "0.04em",
+          }}>
+            T.C.<br />ÜSKÜDAR<br />ÜNİVERSİTESİ
+          </h2>
+        </div>
       </div>
 
-      <div style={{ flex: 1, marginTop: "50px" }}>
+      <div style={{ flex: 1, marginTop: "130px", overflowY: "auto" }}>
 
         {/* Academic Programs */}
         <p
@@ -149,29 +154,30 @@ const Sidebar = () => {
       </div>
 
       {/* Change University Button */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "120px",
-          left: "0",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
+      <div style={{
+        padding: "16px 20px",
+        flexShrink: 0,
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+      }}>
         <button
+          onClick={() => navigate("/")}
           style={{
-            marginTop: "255px",
-            marginRight: 140,
-            padding: "14px 0px",
-            borderRadius: "3px",
-            background: "#cc0707ff",
+            width: "100%",
+            padding: "12px 0",
+            borderRadius: "6px",
+            background: "#cc0707",
             cursor: "pointer",
-            width: "53%",
-            fontSize: 19,
+            fontSize: 13,
+            fontWeight: 600,
             color: "white",
+            border: "none",
+            fontFamily: "Arial, Helvetica, sans-serif",
+            letterSpacing: "0.05em",
+            textTransform: "uppercase",
+            boxShadow: "0 2px 8px rgba(204,7,7,0.25)",
           }}
         >
-          Change University
+          ← Change University
         </button>
       </div>
     </div>

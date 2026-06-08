@@ -1,18 +1,21 @@
 import "./DeleteFaculty.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FACULTY_KEY } from "./DashboardFaculty";
+import { db } from "../../firebase";
+import { doc, deleteDoc } from "firebase/firestore";
 
 export default function DeleteFaculty() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const item = state?.item ?? {};
 
-  function handleDelete() {
-    const stored = localStorage.getItem(FACULTY_KEY);
-    const all = stored ? JSON.parse(stored) : [];
-    const updated = all.filter((f) => f.id !== item.id);
-    localStorage.setItem(FACULTY_KEY, JSON.stringify(updated));
+  // 🔥 Delete from Firestore
+  async function handleDelete() {
+    try {
+      await deleteDoc(doc(db, "faculty", item.id));
+    } catch (err) {
+      console.error("Error deleting faculty:", err);
+    }
     navigate("/dashboard/faculty");
   }
 

@@ -2,48 +2,49 @@ import { useEffect, useMemo, useState } from "react";
 import "./ai.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useNavigate } from "react-router-dom";
-
-const STORAGE_KEY = "guideiq_questions";
-
-const defaultQuestions = [
-  { id: 1,  question: "The library is open from 08:00 AM to 10:00 PM on weekdays", answer: "Exams are online via the portal and specific schedule.", category: "Announcement" },
-  { id: 2,  question: "How do I register?", answer: "Exams are online via the portal and specific schedule.", category: "Announcement" },
-  { id: 3,  question: "Campus library hours?", answer: "The library is open from 08:00 AM to 10:00 PM on weekdays.", category: "Announcement" },
-  { id: 4,  question: "Faculty directory?", answer: "You can find the faculty directory on the university website.", category: "Academic Program" },
-  { id: 5,  question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 6,  question: "IT support contact?", answer: "You can contact IT support via it.support@uskudar.edu.tr.", category: "Announcement" },
-  { id: 7,  question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 8,  question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 9,  question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 10, question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 11, question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 12, question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-  { id: 13, question: "Where are exam results?", answer: "You can view your results from the student portal.", category: "Academic Program" },
-];
-
-function loadQuestions() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-  } catch { /* ignore */ }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultQuestions));
-  return defaultQuestions;
-}
+import { db, auth } from "../../firebase";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function Ai() {
   const navigate = useNavigate();
 
-  const [questions, setQuestions] = useState(loadQuestions);
+  const [questions, setQuestions] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🔥 Load questions from Firestore
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
+
+  async function fetchQuestions() {
+    setLoading(true);
+    try {
+      const snapshot = await getDocs(collection(db, "questions"));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setQuestions(data);
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+    }
+    setLoading(false);
+  }
+
+  // 🔥 Delete from Firestore
+  async function handleDelete() {
+    try {
+      await deleteDoc(doc(db, "questions", deleteId));
+      setQuestions(prev => prev.filter(q => q.id !== deleteId));
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
+    setShowDelete(false);
+  }
 
   const filtered = useMemo(() => {
     const searchValue = search.trim().toLowerCase();
@@ -72,16 +73,10 @@ export default function Ai() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  function handleDelete() {
-    const updated = questions.filter(q => q.id !== deleteId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    setQuestions(updated);
-    setShowDelete(false);
-  }
+  const adminName = auth.currentUser?.displayName || "Admin";
 
   return (
     <div className="ai-page">
-
       <DashboardSidebar activePage="questions" />
 
       <div className="ai-shell">
@@ -90,8 +85,8 @@ export default function Ai() {
         <div className="ai-topbar">
           <div className="ai-topbar-right">
             <div className="ai-user-profile">
-              <div className="ai-user-avatar">{(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}</div>
-              <span className="ai-user-name">{localStorage.getItem("adminName") || "Admin"}</span>
+              <div className="ai-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="ai-user-name">{adminName}</span>
             </div>
           </div>
         </div>
@@ -102,10 +97,8 @@ export default function Ai() {
             <h1>ChatBox Questions</h1>
           </div>
           <div className="ai-header-actions">
-            <button
-              className="ai-button ai-button--ghost"
-              onClick={() => navigate("/dashboard/add-question")}
-            >
+            <button className="ai-button ai-button--ghost"
+              onClick={() => navigate("/dashboard/add-question")}>
               +&nbsp;&nbsp;Add New Question
             </button>
           </div>
@@ -137,10 +130,8 @@ export default function Ai() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <select
-              value={activeCategory}
-              onChange={(e) => { setActiveCategory(e.target.value); setCurrentPage(1); }}
-            >
+            <select value={activeCategory}
+              onChange={(e) => { setActiveCategory(e.target.value); setCurrentPage(1); }}>
               <option value="all">All Categories</option>
               <option value="Announcement">Announcement</option>
               <option value="Academic Program">Academic Program</option>
@@ -149,58 +140,57 @@ export default function Ai() {
         </section>
 
         <section className="ai-table-card">
-          <table className="ai-table">
-            <thead>
-              <tr>
-                <th />
-                <th>Question</th>
-                <th>Answer</th>
-                <th>Category</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((item) => (
-                <tr key={item.id}>
-                  <td><input type="checkbox" /></td>
-                  <td>{item.question}</td>
-                  <td>{item.answer}</td>
-                  <td>
-                    <span className={`ai-badge ${item.category === "Announcement" ? "ai-badge--announcement" : "ai-badge--academic"}`}>
-                      {item.category}
-                    </span>
-                  </td>
-                  <td className="ai-actions-cell">
-                    <button className="ai-icon-btn" onClick={() => navigate("/dashboard/view-question", { state: { item } })}>👁</button>
-                    <button className="ai-icon-btn" onClick={() => navigate("/dashboard/edit-question", { state: { item } })}>✎</button>
-                    <button className="ai-icon-btn" onClick={() => { setDeleteId(item.id); setShowDelete(true); }}>🗑</button>
-                  </td>
+          {loading ? (
+            <p style={{ textAlign: "center", padding: "20px" }}>Loading...</p>
+          ) : (
+            <table className="ai-table">
+              <thead>
+                <tr>
+                  <th />
+                  <th>Question</th>
+                  <th>Answer</th>
+                  <th>Category</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginated.length === 0 ? (
+                  <tr><td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>No questions found</td></tr>
+                ) : (
+                  paginated.map((item) => (
+                    <tr key={item.id}>
+                      <td><input type="checkbox" /></td>
+                      <td>{item.question}</td>
+                      <td>{item.answer}</td>
+                      <td>
+                        <span className={`ai-badge ${item.category === "Announcement" ? "ai-badge--announcement" : "ai-badge--academic"}`}>
+                          {item.category}
+                        </span>
+                      </td>
+                      <td className="ai-actions-cell">
+                        <button className="ai-icon-btn" onClick={() => navigate("/dashboard/view-question", { state: { item } })}>👁</button>
+                        <button className="ai-icon-btn" onClick={() => navigate("/dashboard/edit-question", { state: { item } })}>✎</button>
+                        <button className="ai-icon-btn" onClick={() => { setDeleteId(item.id); setShowDelete(true); }}>🗑</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </section>
 
         {/* PAGINATION */}
         <footer className="ai-footer">
           <div className="ai-pagination">
-            <span
-              className={`ai-page-arrow ${currentPage === 1 ? "disabled" : ""}`}
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-            >‹</span>
-
+            <span className={`ai-page-arrow ${currentPage === 1 ? "disabled" : ""}`}
+              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}>‹</span>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                className={currentPage === page ? "active" : ""}
-                onClick={() => setCurrentPage(page)}
-              >{page}</button>
+              <button key={page} className={currentPage === page ? "active" : ""}
+                onClick={() => setCurrentPage(page)}>{page}</button>
             ))}
-
-            <span
-              className={`ai-page-arrow ${currentPage === totalPages ? "disabled" : ""}`}
-              onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
-            >›</span>
+            <span className={`ai-page-arrow ${currentPage === totalPages ? "disabled" : ""}`}
+              onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}>›</span>
           </div>
         </footer>
 
@@ -228,7 +218,6 @@ export default function Ai() {
           </div>
         </>
       )}
-
     </div>
   );
 }

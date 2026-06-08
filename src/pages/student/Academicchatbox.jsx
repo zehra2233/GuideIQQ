@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../../components/Sidebar";
 import "./Academicchatbox.css";
+import uskudarLogo from "../../assets/uskudar.png";
+import { db } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 function Academicchatbox() {
   const [message, setMessage] = useState("");
@@ -8,22 +11,72 @@ function Academicchatbox() {
     {
       text: "Welcome to the GuideIQ Academic. What information can I help you find today?",
       sender: "assistant",
-  },
+    },
   ]);
 
   const [fromButton, setFromButton] = useState(false);
   const [showQuestions, setShowQuestions] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const messagesEndRef = useRef(null);
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // 🔥 Load Academic Program questions from Firestore
+  useEffect(() => {
+    async function fetchQuestions() {
+      try {
+        const q = query(
+          collection(db, "questions"),
+          where("category", "==", "Academic Program")
+        );
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setQuestions(data);
+      } catch (err) {
+        console.error("Error fetching questions:", err);
+      }
+      setLoading(false);
+    }
+    fetchQuestions();
+  }, []);
 
   const handleSend = () => {
     if (!fromButton || !message.trim()) return;
 
+    const found = questions.find(q => q.question === message);
+    const fullAnswer = found
+      ? found.answer
+      : "I'm sorry, I don't have an answer for that question.";
+
+    // Add user message + empty assistant message
     setMessages((prev) => [
       ...prev,
       { text: message, sender: "user" },
+      { text: "", sender: "assistant", typing: true }
     ]);
 
     setMessage("");
     setFromButton(false);
+
+    // 🔥 Typing animation — letter by letter
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
+          text: fullAnswer.slice(0, i),
+          sender: "assistant",
+          typing: i < fullAnswer.length
+        };
+        return updated;
+      });
+      if (i >= fullAnswer.length) clearInterval(interval);
+    }, 30);
   };
 
   const handleCommonQuestion = (question) => {
@@ -37,7 +90,6 @@ function Academicchatbox() {
       {/* HEADER */}
       <header className="main-header">
         Guide<span className="iq">IQ</span>
-        <span className="change-university">Change University</span>
       </header>
 
       {/* BODY */}
@@ -49,11 +101,34 @@ function Academicchatbox() {
             <div className="chat-messages">
               {messages.map((msg, index) => (
                 <div key={index} className={`chat-row ${msg.sender}`}>
-                  <div className={`chat-bubble ${msg.sender}`}>
+                  {msg.sender === "assistant" && (
+                    <img src={uskudarLogo} alt="Üsküdar" className="chat-avatar" />
+                  )}
+<div className={`chat-bubble ${msg.sender}`} style={{ whiteSpace: "pre-wrap" }}>
                     {msg.text}
+                    {/* Blinking cursor while typing */}
+                    {msg.typing && (
+                      <span style={{
+                        display: "inline-block",
+                        width: "2px",
+                        height: "15px",
+                        background: "#2563eb",
+                        marginLeft: "2px",
+                        verticalAlign: "middle",
+                        animation: "blink 0.7s infinite"
+                      }}/>
+                    )}
                   </div>
+                  {msg.sender === "user" && (
+                    <div className="chat-user-avatar">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                      </svg>
+                    </div>
+                  )}
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* INPUT */}
@@ -61,68 +136,36 @@ function Academicchatbox() {
               <input
                 type="text"
                 value={message}
-                placeholder="Select a question"
+                placeholder="Click to select a question…"
                 readOnly
                 onClick={() => setShowQuestions(true)}
               />
-              <button className="send-btn" onClick={handleSend}>➤</button>
+              <button className="send-btn" onClick={handleSend}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 🔥 CENTER POPUP */}
+      {/* POPUP */}
       {showQuestions && (
-        <div
-          className="popup-overlay"
-          onClick={() => setShowQuestions(false)}
-        >
-          <div
-            className="common-questions popup"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="popup-overlay" onClick={() => setShowQuestions(false)}>
+          <div className="common-questions popup" onClick={(e) => e.stopPropagation()}>
             <h4>Select A Question To Ask</h4>
-
-            <button onClick={() => handleCommonQuestion(
-              "Are there any campus events happening this Friday?"
-            )}>
-              Are there any campus events happening this Friday?
-            </button>
-
-            <button onClick={() => handleCommonQuestion(
-              "What is the final deadline to drop a course?"
-            )}>
-              What is the final deadline to drop a course?
-            </button>
-
-            <button onClick={() => handleCommonQuestion(
-              "Is the Library open on the holiday next Monday?"
-            )}>
-              Is the Library open on the holiday next Monday?
-            </button>
-
-<button onClick={() => handleCommonQuestion(
-              "What changes have been announced regarding lectures, exams, or schedules?"
-            )}>
-What changes have been announced regarding lectures, exams, or schedules?
-            </button>
-
-            <button onClick={() => handleCommonQuestion(
-              "When are the tuition fee payment start and deadline dates?"
-            )}>
-When are the tuition fee payment start and deadline dates?            </button>
-
-              <button onClick={() => handleCommonQuestion(
-              "Has the university announced any campus closures?"
-            )}>
-Has the university announced any campus closures?
-            </button>
-             <button onClick={() => handleCommonQuestion(
-              "Has the university announced any campus closures?"
-            )}>
-What are the latest university announcements?
-            </button>
-
+            {loading ? (
+              <p style={{ textAlign: "center", padding: "10px" }}>Loading...</p>
+            ) : questions.length === 0 ? (
+              <p style={{ textAlign: "center", padding: "10px" }}>No questions available.</p>
+            ) : (
+              questions.map((q) => (
+                <button key={q.id} onClick={() => handleCommonQuestion(q.question)}>
+                  {q.question}
+                </button>
+              ))
+            )}
           </div>
         </div>
       )}

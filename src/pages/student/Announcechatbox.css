@@ -29,13 +29,19 @@
 }
 
 .change-university {
-  color: #ffffff;
-  font-size: 17px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  margin-left: 84%;
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .change-university:hover {
+  color: #ffffff;
   text-decoration: underline;
 }
 
@@ -88,15 +94,45 @@ body {
 /* ===== CHAT ROWS ===== */
 .chat-row {
   display: flex;
+  align-items: flex-end;
+  gap: 10px;
   margin-bottom: 18px;
+}
+
+/* ── UNIVERSITY AVATAR ── */
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  padding: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ── USER AVATAR ── */
+.chat-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37,99,235,0.35);
 }
 
 .chat-row.assistant {
   justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .chat-row.user {
   justify-content: flex-end;
+  align-items: flex-end;
 }
 
 /* ===== CHAT BUBBLES ===== */
@@ -244,4 +280,9 @@ padding: 14px 10px;
     transform: scale(1);
     opacity: 1;
   }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }

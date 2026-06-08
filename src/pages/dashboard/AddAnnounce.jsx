@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import "./AddAnnounce.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useNavigate } from "react-router-dom";
+import { db } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { auth } from "../../firebase";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -79,25 +82,19 @@ function DateTimePicker({ onChange }) {
 
       {open && (
         <div className="aa-calendar-popup">
-          {/* Month nav */}
           <div className="aa-cal-nav">
             <button className="aa-cal-arrow" onClick={prevMonth}>‹</button>
             <span className="aa-cal-month-label">{MONTHS[calMonth]} {calYear}</span>
             <button className="aa-cal-arrow" onClick={nextMonth}>›</button>
           </div>
 
-          {/* Day headers */}
           <div className="aa-cal-grid">
             {DAY_LABELS.map(d => (
               <div key={d} className="aa-cal-day-name">{d}</div>
             ))}
-
-            {/* Empty leading cells */}
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`e${i}`} />
             ))}
-
-            {/* Day cells */}
             {Array.from({ length: totalDays }, (_, i) => i + 1).map(day => (
               <button
                 key={day}
@@ -109,7 +106,6 @@ function DateTimePicker({ onChange }) {
             ))}
           </div>
 
-          {/* Time picker */}
           <div className="aa-cal-time-row">
             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
               <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm.01 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
@@ -138,28 +134,43 @@ export default function AddAnnounce() {
   const [content, setContent] = useState("");
   const [scheduleType, setScheduleType] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handlePublish = () => {
-    const STORAGE_KEY = "guideiq_announcements";
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const all = stored ? JSON.parse(stored) : [];
-    const newId = all.length > 0 ? Math.max(...all.map(a => a.id)) + 1 : 1;
-    const newItem = { id: newId, title, content, scheduleType, publishedDate };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...all, newItem]));
-    navigate("/dashboard/announce");
+  // 🔥 Save to Firestore
+  const handlePublish = async () => {
+    if (!title.trim()) { setError("Please enter a title."); return; }
+    if (!content.trim()) { setError("Please enter content."); return; }
+    if (!publishedDate) { setError("Please select a date and time."); return; }
+    if (!scheduleType) { setError("Please select a schedule type."); return; }
+
+    setLoading(true);
+    setError("");
+    try {
+      await addDoc(collection(db, "announcements"), {
+        title: title.trim(),
+        content: content.trim(),
+        scheduleType,
+        publishedDate,
+        createdAt: new Date().toISOString(),
+        createdBy: auth.currentUser?.email || "admin"
+      });
+      navigate("/dashboard/announce");
+    } catch (err) {
+      setError("Failed to save. Please try again.");
+      console.error(err);
+    }
+    setLoading(false);
   };
 
   const handleCancel = () => {
-    setTitle("");
-    setContent("");
-    setScheduleType("");
-    setPublishedDate("");
     navigate("/dashboard/announce");
   };
 
+  const adminName = auth.currentUser?.displayName || "Admin";
+
   return (
     <div className="ai-page">
-
       <DashboardSidebar activePage="announcements" />
 
       <div className="aa-shell">
@@ -168,13 +179,12 @@ export default function AddAnnounce() {
         <div className="aa-topbar">
           <div className="aa-topbar-right">
             <div className="aa-user-profile">
-              <div className="aa-user-avatar">{(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}</div>
-              <span className="aa-user-name">{localStorage.getItem("adminName") || "Admin"}</span>
+              <div className="aa-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="aa-user-name">{adminName}</span>
             </div>
           </div>
         </div>
 
-        {/* SCROLLABLE CONTENT */}
         <div className="aa-scroll-area">
 
           <header className="aa-header">
@@ -184,6 +194,9 @@ export default function AddAnnounce() {
           </header>
 
           <div className="aa-form-card">
+
+            {/* ERROR */}
+            {error && <p style={{ color: "red", fontSize: "13px", margin: 0 }}>{error}</p>}
 
             {/* TITLE */}
             <div className="aa-form-group">
@@ -231,13 +244,9 @@ export default function AddAnnounce() {
               </label>
               <div className="aa-category-options">
                 <label className="aa-category-option">
-                  <input
-                    type="radio"
-                    name="scheduleType"
-                    value="Scheduled"
+                  <input type="radio" name="scheduleType" value="Scheduled"
                     checked={scheduleType === "Scheduled"}
-                    onChange={(e) => setScheduleType(e.target.value)}
-                  />
+                    onChange={(e) => setScheduleType(e.target.value)} />
                   <div className="aa-category-card">
                     <div className="aa-category-icon">🗓️</div>
                     <div className="aa-category-text">
@@ -247,13 +256,9 @@ export default function AddAnnounce() {
                   </div>
                 </label>
                 <label className="aa-category-option">
-                  <input
-                    type="radio"
-                    name="scheduleType"
-                    value="Immediate"
+                  <input type="radio" name="scheduleType" value="Immediate"
                     checked={scheduleType === "Immediate"}
-                    onChange={(e) => setScheduleType(e.target.value)}
-                  />
+                    onChange={(e) => setScheduleType(e.target.value)} />
                   <div className="aa-category-card">
                     <div className="aa-category-icon">⚡</div>
                     <div className="aa-category-text">
@@ -270,16 +275,15 @@ export default function AddAnnounce() {
               <button className="aa-btn aa-btn--cancel" onClick={handleCancel}>
                 Cancel
               </button>
-              <button className="aa-btn aa-btn--publish" onClick={handlePublish}>
+              <button className="aa-btn aa-btn--publish" onClick={handlePublish} disabled={loading}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", transform: "rotate(-45deg)", marginBottom: "6px" }}>
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                 </svg>
-                Publish
+                {loading ? "Publishing..." : "Publish"}
               </button>
             </div>
 
           </div>
-
         </div>
       </div>
     </div>

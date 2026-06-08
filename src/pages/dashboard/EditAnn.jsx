@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import "./AddAnnounce.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useLocation, useNavigate } from "react-router-dom";
+import { db, auth } from "../../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 const MONTHS = [
   "January","February","March","April","May","June",
@@ -143,29 +145,43 @@ export default function EditAnn() {
 
   const parsed = parseDateString(item.publishedDate);
 
-  const [title,        setTitle]        = useState(item.title        ?? "");
-  const [content,      setContent]      = useState(item.content      ?? "");
-  const [scheduleType, setScheduleType] = useState(item.scheduleType ?? "");
+  const [title,         setTitle]        = useState(item.title        ?? "");
+  const [content,       setContent]      = useState(item.content      ?? "");
+  const [scheduleType,  setScheduleType] = useState(item.scheduleType ?? "");
   const [publishedDate, setPublishedDate] = useState(item.publishedDate ?? "");
+  const [loading,       setLoading]      = useState(false);
+  const [error,         setError]        = useState("");
 
-  const handleSave = () => {
-    const STORAGE_KEY = "guideiq_announcements";
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const all = stored ? JSON.parse(stored) : [];
-    const updated = all.map(a =>
-      a.id === item.id
-        ? { ...a, title, content, scheduleType, publishedDate }
-        : a
-    );
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    navigate("/dashboard/announce");
+  // 🔥 Save changes to Firestore
+  const handleSave = async () => {
+    if (!title.trim()) { setError("Please enter a title."); return; }
+    if (!content.trim()) { setError("Please enter content."); return; }
+
+    setLoading(true);
+    setError("");
+    try {
+      await updateDoc(doc(db, "announcements", item.id), {
+        title: title.trim(),
+        content: content.trim(),
+        scheduleType,
+        publishedDate,
+        updatedAt: new Date().toISOString(),
+        updatedBy: auth.currentUser?.email || "admin"
+      });
+      navigate("/dashboard/announce");
+    } catch (err) {
+      console.error("Error updating:", err);
+      setError("Failed to save changes. Please try again.");
+    }
+    setLoading(false);
   };
 
   const handleCancel = () => navigate("/dashboard/announce");
 
+  const adminName = auth.currentUser?.displayName || "Admin";
+
   return (
     <div className="ai-page">
-
       <DashboardSidebar activePage="announcements" />
 
       <div className="aa-shell">
@@ -174,13 +190,12 @@ export default function EditAnn() {
         <div className="aa-topbar">
           <div className="aa-topbar-right">
             <div className="aa-user-profile">
-              <div className="aa-user-avatar">{(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}</div>
-              <span className="aa-user-name">{localStorage.getItem("adminName") || "Admin"}</span>
+              <div className="aa-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="aa-user-name">{adminName}</span>
             </div>
           </div>
         </div>
 
-        {/* SCROLLABLE CONTENT */}
         <div className="aa-scroll-area">
 
           <header className="aa-header">
@@ -188,6 +203,9 @@ export default function EditAnn() {
               <h1>Edit Announcement</h1>
             </div>
           </header>
+
+          {/* ERROR */}
+          {error && <p style={{ color: "red", fontSize: "13px", margin: "0 0 10px 0" }}>{error}</p>}
 
           {/* TITLE */}
           <div className="aa-form-group">
@@ -225,10 +243,7 @@ export default function EditAnn() {
             <label className="aa-form-label">
               <span className="aa-step">3.</span> Published Date &amp; Time <span className="aa-required">*</span>
             </label>
-            <DateTimePicker
-              initial={parsed}
-              onChange={setPublishedDate}
-            />
+            <DateTimePicker initial={parsed} onChange={setPublishedDate} />
           </div>
 
           {/* SCHEDULE TYPE */}
@@ -238,13 +253,9 @@ export default function EditAnn() {
             </label>
             <div className="aa-category-options">
               <label className="aa-category-option">
-                <input
-                  type="radio"
-                  name="scheduleType"
-                  value="Scheduled"
+                <input type="radio" name="scheduleType" value="Scheduled"
                   checked={scheduleType === "Scheduled"}
-                  onChange={(e) => setScheduleType(e.target.value)}
-                />
+                  onChange={(e) => setScheduleType(e.target.value)} />
                 <div className="aa-category-card">
                   <div className="aa-category-icon">🗓️</div>
                   <div className="aa-category-text">
@@ -254,13 +265,9 @@ export default function EditAnn() {
                 </div>
               </label>
               <label className="aa-category-option">
-                <input
-                  type="radio"
-                  name="scheduleType"
-                  value="Immediate"
+                <input type="radio" name="scheduleType" value="Immediate"
                   checked={scheduleType === "Immediate"}
-                  onChange={(e) => setScheduleType(e.target.value)}
-                />
+                  onChange={(e) => setScheduleType(e.target.value)} />
                 <div className="aa-category-card">
                   <div className="aa-category-icon">⚡</div>
                   <div className="aa-category-text">
@@ -277,11 +284,11 @@ export default function EditAnn() {
             <button className="aa-btn aa-btn--cancel" onClick={handleCancel}>
               Cancel
             </button>
-            <button className="aa-btn aa-btn--publish" onClick={handleSave}>
+            <button className="aa-btn aa-btn--publish" onClick={handleSave} disabled={loading}>
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", marginBottom: "3px" }}>
                 <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
               </svg>
-              Save Changes
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
 

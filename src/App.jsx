@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import RoughPage from "./pages/student/RoughPage";
 import HomePage from "./pages/student/homepage";
+import StudentLogin from "./pages/student/StudentLogin";
 import UniAnnouncement from "./pages/student/UniAnnouncement";
 import Announcechatbox from "./pages/student/Announcechatbox";
 import Academicchatbox from "./pages/student/Academicchatbox";
@@ -36,6 +37,7 @@ function App() {
     <>
       <Routes>
         {/* ── SYSTEM ROUTES ── */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/rough" element={<RoughPage />} />
         <Route path="/announcements" element={<UniAnnouncement />} />
@@ -67,8 +69,8 @@ function App() {
         {/* add more dashboard pages here */}
       </Routes>
 
-      {/* Hide WhatsApp button on homepage AND all dashboard pages */}
-      {!isDashboard && location.pathname !== "/homepage" && <WhatsAppButton />}
+      {/* Hide WhatsApp button on homepage, login, and all dashboard pages */}
+      {!isDashboard && location.pathname !== "/homepage" && location.pathname !== "/" && <WhatsAppButton />}
     </>
   );
 }

@@ -2,35 +2,50 @@ import { useState } from "react";
 import "./AddQuestion.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const STORAGE_KEY = "guideiq_questions";
+import { db, auth } from "../../firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default function EditAi() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const item = state?.item ?? {};
 
-  const [question, setQuestion]           = useState(item.question ?? "");
-  const [answer, setAnswer]               = useState(item.answer   ?? "");
+  const [question, setQuestion] = useState(item.question ?? "");
+  const [answer, setAnswer] = useState(item.answer ?? "");
   const [selectedCategory, setSelectedCategory] = useState(item.category ?? "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSave = () => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const all = stored ? JSON.parse(stored) : [];
-    const updated = all.map(q =>
-      q.id === item.id
-        ? { ...q, question, answer, category: selectedCategory }
-        : q
-    );
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    navigate("/dashboard/ai");
+  // 🔥 Save changes to Firestore
+  const handleSave = async () => {
+    if (!question.trim()) { setError("Please enter a question."); return; }
+    if (!answer.trim()) { setError("Please enter an answer."); return; }
+    if (!selectedCategory) { setError("Please select a category."); return; }
+
+    setLoading(true);
+    setError("");
+    try {
+      await updateDoc(doc(db, "questions", item.id), {
+        question: question.trim(),
+        answer: answer.trim(),
+        category: selectedCategory,
+        updatedAt: new Date().toISOString(),
+        updatedBy: auth.currentUser?.email || "admin"
+      });
+      navigate("/dashboard/ai");
+    } catch (err) {
+      console.error("Error updating question:", err);
+      setError("Failed to save changes. Please try again.");
+    }
+    setLoading(false);
   };
 
   const handleCancel = () => navigate("/dashboard/ai");
 
+  const adminName = auth.currentUser?.displayName || "Admin";
+
   return (
     <div className="ai-page">
-
       <DashboardSidebar activePage="questions" />
 
       <div className="aq-shell">
@@ -39,13 +54,12 @@ export default function EditAi() {
         <div className="aq-topbar">
           <div className="aq-topbar-right">
             <div className="aq-user-profile">
-              <div className="aq-user-avatar">{(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}</div>
-              <span className="aq-user-name">{localStorage.getItem("adminName") || "Admin"}</span>
+              <div className="aq-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="aq-user-name">{adminName}</span>
             </div>
           </div>
         </div>
 
-        {/* SCROLLABLE CONTENT */}
         <div className="aq-scroll-area">
 
           <header className="aq-header">
@@ -53,6 +67,9 @@ export default function EditAi() {
               <h1>Edit Question</h1>
             </div>
           </header>
+
+          {/* ERROR */}
+          {error && <p style={{ color: "red", fontSize: "13px", margin: "0 0 10px 0" }}>{error}</p>}
 
           {/* QUESTION */}
           <div className="aq-form-group">
@@ -91,13 +108,9 @@ export default function EditAi() {
             </label>
             <div className="aq-category-options">
               <label className="aq-category-option">
-                <input
-                  type="radio"
-                  name="category"
-                  value="Announcement"
+                <input type="radio" name="category" value="Announcement"
                   checked={selectedCategory === "Announcement"}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                />
+                  onChange={(e) => setSelectedCategory(e.target.value)} />
                 <div className="aq-category-card">
                   <div className="aq-category-icon">📣</div>
                   <div className="aq-category-text">
@@ -107,13 +120,9 @@ export default function EditAi() {
                 </div>
               </label>
               <label className="aq-category-option">
-                <input
-                  type="radio"
-                  name="category"
-                  value="Academic Program"
+                <input type="radio" name="category" value="Academic Program"
                   checked={selectedCategory === "Academic Program"}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                />
+                  onChange={(e) => setSelectedCategory(e.target.value)} />
                 <div className="aq-category-card">
                   <div className="aq-category-icon">🎓</div>
                   <div className="aq-category-text">
@@ -130,11 +139,11 @@ export default function EditAi() {
             <button className="aq-btn aq-btn--cancel" onClick={handleCancel}>
               Cancel
             </button>
-            <button className="aq-btn aq-btn--publish" onClick={handleSave}>
+            <button className="aq-btn aq-btn--publish" onClick={handleSave} disabled={loading}>
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", marginBottom: "3px" }}>
                 <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
               </svg>
-              Save Changes
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
 

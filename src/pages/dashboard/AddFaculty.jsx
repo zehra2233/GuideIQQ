@@ -2,7 +2,8 @@ import { useState, useRef } from "react";
 import "./AddFaculty.css";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import { useNavigate } from "react-router-dom";
-import { FACULTY_KEY } from "./DashboardFaculty";
+import { db, auth } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 export default function AddFaculty() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export default function AddFaculty() {
   const [office, setOffice] = useState("");
   const [hours, setHours] = useState("");
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const fileRef = useRef(null);
 
   function handlePhotoChange(e) {
@@ -24,22 +27,42 @@ export default function AddFaculty() {
     reader.readAsDataURL(file);
   }
 
-  function handleSave() {
-    const stored = localStorage.getItem(FACULTY_KEY);
-    const all = stored ? JSON.parse(stored) : [];
-    const newId = all.length > 0 ? Math.max(...all.map((f) => f.id)) + 1 : 1;
-    const newItem = { id: newId, name, department, email, phone, office, hours, photo: photoPreview };
-    localStorage.setItem(FACULTY_KEY, JSON.stringify([...all, newItem]));
-    navigate("/dashboard/faculty");
+  // 🔥 Save to Firestore
+  async function handleSave() {
+    if (!name.trim()) { setError("Please enter a name."); return; }
+    if (!department.trim()) { setError("Please enter a department."); return; }
+    if (!email.trim()) { setError("Please enter an email."); return; }
+
+    setLoading(true);
+    setError("");
+    try {
+      await addDoc(collection(db, "faculty"), {
+        name: name.trim(),
+        department: department.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        office: office.trim(),
+        hours: hours.trim(),
+        photo: photoPreview || null,
+        createdAt: new Date().toISOString(),
+        createdBy: auth.currentUser?.email || "admin"
+      });
+      navigate("/dashboard/faculty");
+    } catch (err) {
+      console.error("Error adding faculty:", err);
+      setError("Failed to save. Please try again.");
+    }
+    setLoading(false);
   }
 
   function handleCancel() {
     navigate("/dashboard/faculty");
   }
 
+  const adminName = auth.currentUser?.displayName || "Admin";
+
   return (
     <div className="af-page">
-
       <DashboardSidebar activePage="faculty" />
 
       <div className="af-shell">
@@ -48,17 +71,12 @@ export default function AddFaculty() {
         <div className="af-topbar">
           <div className="af-topbar-right">
             <div className="af-user-profile">
-              <div className="af-user-avatar">
-                {(localStorage.getItem("adminName") || "Admin")[0].toUpperCase()}
-              </div>
-              <span className="af-user-name">
-                {localStorage.getItem("adminName") || "Admin"}
-              </span>
+              <div className="af-user-avatar">{adminName[0].toUpperCase()}</div>
+              <span className="af-user-name">{adminName}</span>
             </div>
           </div>
         </div>
 
-        {/* SCROLLABLE CONTENT */}
         <div className="af-scroll-area">
 
           <header className="af-header">
@@ -66,6 +84,9 @@ export default function AddFaculty() {
           </header>
 
           <div className="af-form-card">
+
+            {/* ERROR */}
+            {error && <p style={{ color: "red", fontSize: "13px", margin: 0 }}>{error}</p>}
 
             {/* PHOTO */}
             <div className="af-photo-section">
@@ -98,23 +119,13 @@ export default function AddFaculty() {
             <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Full Name <span className="af-required">*</span></label>
-                <input
-                  type="text"
-                  className="af-input"
-                  placeholder="e.g. Prof. Dr. Ahmet Yılmaz"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <input type="text" className="af-input" placeholder="e.g. Prof. Dr. Ahmet Yılmaz"
+                  value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="af-form-group">
                 <label className="af-form-label">Department <span className="af-required">*</span></label>
-                <input
-                  type="text"
-                  className="af-input"
-                  placeholder="e.g. Computer Engineering"
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                />
+                <input type="text" className="af-input" placeholder="e.g. Computer Engineering"
+                  value={department} onChange={(e) => setDepartment(e.target.value)} />
               </div>
             </div>
 
@@ -122,23 +133,13 @@ export default function AddFaculty() {
             <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Email <span className="af-required">*</span></label>
-                <input
-                  type="email"
-                  className="af-input"
-                  placeholder="e.g. name@uskudar.edu.tr"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <input type="email" className="af-input" placeholder="e.g. name@uskudar.edu.tr"
+                  value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className="af-form-group">
                 <label className="af-form-label">Phone</label>
-                <input
-                  type="text"
-                  className="af-input"
-                  placeholder="e.g. +90 216 400 2222"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
+                <input type="text" className="af-input" placeholder="e.g. +90 216 400 2222"
+                  value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
             </div>
 
@@ -146,23 +147,13 @@ export default function AddFaculty() {
             <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Office Location</label>
-                <input
-                  type="text"
-                  className="af-input"
-                  placeholder="e.g. B Block, Room 301"
-                  value={office}
-                  onChange={(e) => setOffice(e.target.value)}
-                />
+                <input type="text" className="af-input" placeholder="e.g. B Block, Room 301"
+                  value={office} onChange={(e) => setOffice(e.target.value)} />
               </div>
               <div className="af-form-group">
                 <label className="af-form-label">Office Hours</label>
-                <input
-                  type="text"
-                  className="af-input"
-                  placeholder="e.g. Mon–Wed 10:00–12:00"
-                  value={hours}
-                  onChange={(e) => setHours(e.target.value)}
-                />
+                <input type="text" className="af-input" placeholder="e.g. Mon–Wed 10:00–12:00"
+                  value={hours} onChange={(e) => setHours(e.target.value)} />
               </div>
             </div>
 
@@ -171,11 +162,11 @@ export default function AddFaculty() {
               <button className="af-btn af-btn--cancel" onClick={handleCancel}>
                 Cancel
               </button>
-              <button className="af-btn af-btn--save" onClick={handleSave}>
+              <button className="af-btn af-btn--save" onClick={handleSave} disabled={loading}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", transform: "rotate(-45deg)", marginBottom: "6px" }}>
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                 </svg>
-                Upload
+                {loading ? "Uploading..." : "Upload"}
               </button>
             </div>
 

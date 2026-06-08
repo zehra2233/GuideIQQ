@@ -1,6 +1,12 @@
 import { useState } from "react";
 import "./DashboardLogin.css";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile
+} from "firebase/auth";
 
 const CAPTCHA_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
 function genCaptcha() {
@@ -20,6 +26,9 @@ export default function DashboardLogin() {
   const [signup, setSignup] = useState({ name: "", email: "", password: "", confirm: "", captcha: "" });
   const [captchaCode, setCaptchaCode] = useState(genCaptcha);
   const [captchaError, setCaptchaError] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function refreshCaptcha() {
     setCaptchaCode(genCaptcha());
@@ -27,36 +36,65 @@ export default function DashboardLogin() {
     setCaptchaError(false);
   }
 
-  function handleSignup() {
+  // 🔥 Firebase Login
+  async function handleLogin() {
+    setError("");
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, login.email, login.password);
+      navigate("/dashboard/ai");
+    } catch {
+      setError("Invalid email or password. Please try again.");
+    }
+    setLoading(false);
+  }
+
+  // 🔥 Firebase Signup
+  async function handleSignup() {
+    setError("");
+    if (signup.password !== signup.confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
     if (signup.captcha.trim() !== captchaCode) {
       setCaptchaError(true);
       setCaptchaCode(genCaptcha());
       setSignup(s => ({ ...s, captcha: "" }));
       return;
     }
-    setCaptchaError(false);
-    localStorage.setItem("adminName", signup.name.trim() || "Admin");
-    setMode("login");
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, signup.email, signup.password);
+      await updateProfile(userCredential.user, { displayName: signup.name.trim() || "Admin" });
+      // ✅ Clear form, show success, go to login
+      setSignup({ name: "", email: "", password: "", confirm: "", captcha: "" });
+      setError("");
+      setSuccess("Account created! Please log in.");
+      setMode("login");
+    } catch (e) {
+      if (e.code === "auth/email-already-in-use") {
+        setError("This email is already registered.");
+      } else if (e.code === "auth/weak-password") {
+        setError("Password must be at least 6 characters.");
+      } else {
+        setError(e.message);
+      }
+    }
+    setLoading(false);
   }
 
   return (
     <div className="dl-page">
-
-      {/* Animated background blobs */}
       <div className="dl-blob dl-blob-1" />
       <div className="dl-blob dl-blob-2" />
       <div className="dl-blob dl-blob-3" />
       <div className="dl-blob dl-blob-4" />
 
-      {/* Floating particles */}
       {[...Array(12)].map((_, i) => (
         <div key={i} className="dl-particle" style={{ "--i": i }} />
       ))}
 
-      {/* Card */}
       <div className="dl-card">
-
-        {/* Logo + brand */}
         <div className="dl-logo-row">
           <svg className="dl-logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M38 6 Q42 6 42 10 L42 28 Q42 32 38 32 L20 32 L13 42 L15 32 L10 32 Q6 32 6 28 L6 10 Q6 6 10 6 Z" fill="#202c49"/>
@@ -73,32 +111,25 @@ export default function DashboardLogin() {
           {mode === "login" ? "ADMIN PANEL" : "Create an account"}
         </h2>
 
+        {/* Messages */}
+        {error && <p style={{ color: "red", fontSize: "13px", marginBottom: "10px", textAlign: "center" }}>{error}</p>}
+        {success && <p style={{ color: "green", fontSize: "13px", marginBottom: "10px", textAlign: "center" }}>{success}</p>}
+
         {mode === "login" ? (
           <div className="dl-form" key="login">
-
             <div className="dl-field">
               <label className="dl-field-label">User ID or email address</label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type="email"
-                  placeholder="Email or phone number"
-                  value={login.email}
-                  onChange={e => setLogin({ ...login, email: e.target.value })}
-                />
+                <input className="dl-box-input" type="email" placeholder="Email or phone number"
+                  value={login.email} onChange={e => setLogin({ ...login, email: e.target.value })} />
               </div>
             </div>
 
             <div className="dl-field">
               <label className="dl-field-label">Password</label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                  value={login.password}
-                  onChange={e => setLogin({ ...login, password: e.target.value })}
-                />
+                <input className="dl-box-input" type={showPassword ? "text" : "password"} placeholder="Enter password"
+                  value={login.password} onChange={e => setLogin({ ...login, password: e.target.value })} />
                 <button className="dl-eye" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? (
                     <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
@@ -125,55 +156,38 @@ export default function DashboardLogin() {
               <a href="#" className="dl-forgot">Forgot password?</a>
             </div>
 
-            <button className="dl-signin-btn" onClick={() => navigate("/dashboard/ai")}>
-              Log in
+            <button className="dl-signin-btn" onClick={handleLogin} disabled={loading}>
+              {loading ? "Logging in..." : "Log in"}
             </button>
 
             <p className="dl-switch-center">
               Don't have an account?{" "}
-              <span className="dl-switch-link" onClick={() => setMode("signup")}>Sign up</span>
+              <span className="dl-switch-link" onClick={() => { setMode("signup"); setError(""); setSuccess(""); }}>Sign up</span>
             </p>
-
           </div>
         ) : (
           <div className="dl-form" key="signup">
-
             <div className="dl-field">
               <label className="dl-field-label">Full Name <span className="dl-star">*</span></label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type="text"
-                  placeholder="John Doe"
-                  value={signup.name}
-                  onChange={e => setSignup({ ...signup, name: e.target.value })}
-                />
+                <input className="dl-box-input" type="text" placeholder="John Doe"
+                  value={signup.name} onChange={e => setSignup({ ...signup, name: e.target.value })} />
               </div>
             </div>
 
             <div className="dl-field">
               <label className="dl-field-label">Email address <span className="dl-star">*</span></label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type="email"
-                  placeholder="admin@guideiq.com"
-                  value={signup.email}
-                  onChange={e => setSignup({ ...signup, email: e.target.value })}
-                />
+                <input className="dl-box-input" type="email" placeholder="admin@guideiq.com"
+                  value={signup.email} onChange={e => setSignup({ ...signup, email: e.target.value })} />
               </div>
             </div>
 
             <div className="dl-field">
               <label className="dl-field-label">Password <span className="dl-star">*</span></label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                  value={signup.password}
-                  onChange={e => setSignup({ ...signup, password: e.target.value })}
-                />
+                <input className="dl-box-input" type={showPassword ? "text" : "password"} placeholder="Enter password"
+                  value={signup.password} onChange={e => setSignup({ ...signup, password: e.target.value })} />
                 <button className="dl-eye" onClick={() => setShowPassword(!showPassword)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -186,13 +200,8 @@ export default function DashboardLogin() {
             <div className="dl-field">
               <label className="dl-field-label">Confirm Password <span className="dl-star">*</span></label>
               <div className="dl-box-wrap">
-                <input
-                  className="dl-box-input"
-                  type={showConfirm ? "text" : "password"}
-                  placeholder="Re-enter password"
-                  value={signup.confirm}
-                  onChange={e => setSignup({ ...signup, confirm: e.target.value })}
-                />
+                <input className="dl-box-input" type={showConfirm ? "text" : "password"} placeholder="Re-enter password"
+                  value={signup.confirm} onChange={e => setSignup({ ...signup, confirm: e.target.value })} />
                 <button className="dl-eye" onClick={() => setShowConfirm(!showConfirm)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" width="18" height="18">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -207,8 +216,7 @@ export default function DashboardLogin() {
               <div className="dl-captcha-row">
                 <input
                   className={`dl-box-input dl-captcha-input ${captchaError ? "dl-box-input--error" : ""}`}
-                  type="text"
-                  placeholder="Enter captcha"
+                  type="text" placeholder="Enter captcha"
                   value={signup.captcha}
                   onChange={e => { setSignup({ ...signup, captcha: e.target.value }); setCaptchaError(false); }}
                 />
@@ -224,18 +232,16 @@ export default function DashboardLogin() {
               {captchaError && <p className="dl-captcha-error">Incorrect captcha. Please try again.</p>}
             </div>
 
-            <button className="dl-signin-btn" onClick={handleSignup}>
-              Create Account
+            <button className="dl-signin-btn" onClick={handleSignup} disabled={loading}>
+              {loading ? "Creating account..." : "Create Account"}
             </button>
 
             <p className="dl-switch-center">
               Already have an account?{" "}
-              <span className="dl-switch-link" onClick={() => setMode("login")}>Sign in</span>
+              <span className="dl-switch-link" onClick={() => { setMode("login"); setError(""); setSuccess(""); }}>Sign in</span>
             </p>
-
           </div>
         )}
-
       </div>
     </div>
   );

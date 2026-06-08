@@ -63,6 +63,16 @@
   color: white;
 }
 
+.ai-nav-item:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.ai-nav-item--active {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
 .ai-university-button {
   width: 50%;
   padding: 15px 16px;

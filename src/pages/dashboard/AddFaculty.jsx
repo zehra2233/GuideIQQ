@@ -5,13 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
+const TITLES = [
+  "Prof. Dr.",
+  "Doç. Dr.",
+  "Dr. Öğr. Üyesi",
+  "Öğr. Gör. Dr.",
+  "Öğr. Gör.",
+  "Arş. Gör. Dr.",
+  "Arş. Gör.",
+];
+
 export default function AddFaculty() {
   const navigate = useNavigate();
 
+  const [title, setTitle] = useState("");
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [office, setOffice] = useState("");
   const [hours, setHours] = useState("");
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -36,11 +46,13 @@ export default function AddFaculty() {
     setLoading(true);
     setError("");
     try {
+      // ✅ Full name = title + name
+      const fullName = title ? `${title} ${name.trim()}` : name.trim();
       await addDoc(collection(db, "faculty"), {
-        name: name.trim(),
+        title: title,
+        name: fullName,
         department: department.trim(),
         email: email.trim(),
-        phone: phone.trim(),
         office: office.trim(),
         hours: hours.trim(),
         photo: photoPreview || null,
@@ -106,44 +118,45 @@ export default function AddFaculty() {
                 <h3>Profile Photo</h3>
                 <p>Click the circle to upload a photo.<br />JPG or PNG recommended.</p>
               </div>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handlePhotoChange}
-              />
+              <input ref={fileRef} type="file" accept="image/*"
+                style={{ display: "none" }} onChange={handlePhotoChange} />
             </div>
 
-            {/* NAME + DEPARTMENT */}
+            {/* TITLE */}
             <div className="af-form-row">
               <div className="af-form-group">
+                <label className="af-form-label">Title</label>
+                <select className="af-input" value={title} onChange={(e) => setTitle(e.target.value)}
+                  style={{ cursor: "pointer" }}>
+                  <option value="">Select Title</option>
+                  {TITLES.map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="af-form-group">
                 <label className="af-form-label">Full Name <span className="af-required">*</span></label>
-                <input type="text" className="af-input" placeholder="e.g. Prof. Dr. Ahmet Yılmaz"
+                <input type="text" className="af-input" placeholder="e.g. Ahmet Yılmaz"
                   value={name} onChange={(e) => setName(e.target.value)} />
               </div>
+            </div>
+
+       
+            {/* DEPARTMENT */}
+            <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Department <span className="af-required">*</span></label>
                 <input type="text" className="af-input" placeholder="e.g. Computer Engineering"
                   value={department} onChange={(e) => setDepartment(e.target.value)} />
               </div>
-            </div>
-
-            {/* EMAIL + PHONE */}
-            <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Email <span className="af-required">*</span></label>
                 <input type="email" className="af-input" placeholder="e.g. name@uskudar.edu.tr"
                   value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
-              <div className="af-form-group">
-                <label className="af-form-label">Phone</label>
-                <input type="text" className="af-input" placeholder="e.g. +90 216 400 2222"
-                  value={phone} onChange={(e) => setPhone(e.target.value)} />
-              </div>
             </div>
 
-            {/* OFFICE + HOURS */}
+            {/* OFFICE */}
             <div className="af-form-row">
               <div className="af-form-group">
                 <label className="af-form-label">Office Location</label>
@@ -163,7 +176,8 @@ export default function AddFaculty() {
                 Cancel
               </button>
               <button className="af-btn af-btn--save" onClick={handleSave} disabled={loading}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white" style={{ marginRight: "10px", verticalAlign: "middle", transform: "rotate(-45deg)", marginBottom: "6px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="white"
+                  style={{ marginRight: "10px", verticalAlign: "middle", transform: "rotate(-45deg)", marginBottom: "6px" }}>
                   <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                 </svg>
                 {loading ? "Uploading..." : "Upload"}

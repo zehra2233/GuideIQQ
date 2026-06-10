@@ -18,6 +18,8 @@
   font-weight: 600;
   z-index: 1000;
   color: rgb(255, 255, 255);
+    font-family: initial;
+
 }
 
 .ai-brand-title span {

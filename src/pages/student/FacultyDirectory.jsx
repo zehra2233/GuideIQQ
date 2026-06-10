@@ -78,9 +78,9 @@ function FacultyDirectory() {
                   onChange={(e) => setDeptFilter(e.target.value)}>
                   <option value="">Department</option>
                   <option value="Business">Business</option>
-                  <option value="Software Engineer">Software Engineer</option>
+                  <option value="Software Engineering">Software Engineering</option>
                   <option value="Bio Medical Engineering">Bio Medical Engineering</option>
-                  <option value="Computer Engineer">Computer Engineer</option>
+                  <option value="Computer Engineering">Computer Engineering</option>
                   <option value="Accounting">Accounting</option>
                   <option value="Economics">Economics</option>
                 </select>

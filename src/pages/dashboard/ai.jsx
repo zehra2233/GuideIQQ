@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { db, auth } from "../../firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 5;
 
 export default function Ai() {
   const navigate = useNavigate();
@@ -161,7 +161,9 @@ export default function Ai() {
                     <tr key={item.id}>
                       <td><input type="checkbox" /></td>
                       <td>{item.question}</td>
-                      <td>{item.answer}</td>
+                      <td style={{ maxWidth: "300px" }}>
+                        {item.answer.length > 80 ? item.answer.slice(0, 80) + "..." : item.answer}
+                      </td>
                       <td>
                         <span className={`ai-badge ${item.category === "Announcement" ? "ai-badge--announcement" : "ai-badge--academic"}`}>
                           {item.category}

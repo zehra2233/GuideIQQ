@@ -72,16 +72,22 @@ GuideIQ/
 
 ### Login / Sign Up
 
-*(Add screenshot here)*
+![alt text](image.png)
+
 
 ### Student Chatbot
 
-*(Add screenshot here)*
+![alt text](image-1.png)
 
 ### Admin Dashboard
 
-*(Add screenshot here)*
+![alt text](image-2.png)
 
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+![alt text](image-5.png)
 ---
 
 ## Getting Started

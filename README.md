@@ -1,16 +1,114 @@
-# React + Vite
+# GuideIQ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+GuideIQ is a full-stack university information platform designed to help students quickly access important campus information through an AI-powered chatbot, faculty directory, and university announcements.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The system provides separate interfaces for **students** and **administrators**. Students can chat with an AI assistant to get instant answers about academic programs and announcements, browse the faculty directory, and stay updated with the latest university news. Administrators have a dedicated dashboard to manage announcements, faculty members, and chatbot questions/answers in real time.
 
-## React Compiler
+This project consists of a **React + Vite** frontend connected to a **Firebase** backend (Authentication & Firestore).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+GuideIQ/
+│
+├── src/
+│   ├── components/      # Shared components (Sidebar, WhatsApp button, etc.)
+│   ├── pages/
+│   │   ├── dashboard/    # Admin dashboard pages
+│   │   └── student/      # Student-facing pages
+│   ├── firebase.js       # Firebase configuration
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── public/
+└── README.md
+
+
+---
+
+## Main Features
+
+### Student Features
+
+- Login & registration
+- AI Academic & Announcement chatbots
+- University announcements
+- Faculty directory
+- WhatsApp quick contact
+
+### Admin Features
+
+- Secure login & signup
+- Manage announcements
+- Manage faculty directory
+- Manage chatbot questions
+- Account settings (profile, password, photo)
+
+---
+
+## Technologies Used
+
+### Frontend
+
+- React
+- JavaScript (JSX)
+- Vite
+- React Router
+- HTML
+- CSS
+
+### Backend / Database
+
+- Firebase Authentication
+- Firebase Firestore (database)
+- Firebase Storage
+
+---
+
+## Screenshots
+
+### Login / Sign Up
+
+*(Add screenshot here)*
+
+### Student Chatbot
+
+*(Add screenshot here)*
+
+### Admin Dashboard
+
+*(Add screenshot here)*
+
+---
+
+## Getting Started
+
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+
+1. Clone the repository
+```bash
+git clone https://github.com/zehra2233/GuideIQQ.git
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Run the development server
+```bash
+npm run dev
+```
+
+The app will automatically connect to the shared Firebase backend, so all announcements, faculty, and questions added through the dashboard will be visible to anyone running the project.
+
+---
+
+## Author
+
+**Zehra Sadat**
